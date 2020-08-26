@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.util.*;
 
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -32,8 +33,23 @@ public class Visuals {
         gc.fillRect(0,0,canvasWidth,canvasHeight);
 
         canvas.setOnMouseClicked(event -> {
-            drawVertix(event.getX()-5,event.getY()-5);
+            callCorrectDrawMethod(event.getX(),event.getY());
         });
+    }
+
+    private void callCorrectDrawMethod(double x,double y){
+        switch (Main.getBtnSelected()){
+            case 0:
+                JOptionPane.showMessageDialog(null,"Please select an option from the draw menu first");
+                return;
+            case 1:
+                drawVertix(x-5,y-5);
+
+
+        }
+
+
+
     }
 
     private void drawVertix(double x,double y){
@@ -41,10 +57,11 @@ public class Visuals {
         if(validVertexPos(x,y)) {
             Pair pair = new Pair(x, y);
             arrVertexPos.add(pair);
-            gc.setFill(Color.BLACK);
+            gc.setFill(Color.BURLYWOOD);
             gc.setLineWidth(2.0D);
 
-            gc.strokeOval(x, y, 40, 40);
+            gc.fillOval(x, y, 40, 40);
+            gc.setFill(Color.BLACK);
             gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
             if ((vertexCount + "").length() == 1) {
                 gc.fillText(vertexCount + "", x + 15, y + 25);
@@ -57,22 +74,22 @@ public class Visuals {
             vertexCount++;
         }
         else{
-            System.out.println("Invalid vertex pos");
+            JOptionPane.showMessageDialog(null,"Please choose a valid position on the board");
         }
     }
 
     private boolean validVertexPos(double x,double y){
         Double tempX,tempY;
-        if(y+40>canvasHeight || x-40<0){//basic bounds checking
+        if(y+40>canvasHeight || x-40<0|| x+40>canvasWidth){//basic bounds checking
             return false;
 
         }
-        for (int i=0;i<arrVertexPos.size();i++){
-            tempX=arrVertexPos.get(i).getKey();
-            tempY=arrVertexPos.get(i).getValue();
-            System.out.println("tempX: "+tempX+" tempY:"+tempY);
-            System.out.println(x+"   "+y);
-            if((tempX-45<x && x<tempX+45) && (tempY-45<y && y<tempY+45)){
+        for (Pair<Double, Double> arrVertexPo : arrVertexPos) {
+            tempX = arrVertexPo.getKey();
+            tempY = arrVertexPo.getValue();
+//            System.out.println("tempX: "+tempX+" tempY:"+tempY);
+//            System.out.println(x+"   "+y);
+            if ((tempX - 45 < x && x < tempX + 45) && (tempY - 45 < y && y < tempY + 45)) {
                 return false;
             }
         }
