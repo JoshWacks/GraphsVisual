@@ -7,9 +7,14 @@ public class Vertex {
     private int vertexNumber;
     private int colour;
     private ArrayList<Vertex>adjacencies =new ArrayList<>();
+    private double xPos;
+    private double yPos;
 
-    public Vertex(int num){
+
+    public Vertex(int num,double x,double y){
         vertexNumber=num;
+        xPos=x;
+        yPos=y;
         colour=-1;//Sets the colour of that vertex to -1 representing uncoloured
     }
 
@@ -28,6 +33,26 @@ public class Vertex {
 
     public int getColour() {
         return colour;
+    }
+
+    public int getVertexNumber(){
+        return vertexNumber;
+    }
+
+    public double getxPos() {
+        return xPos;
+    }
+
+    public void setxPos(double xPos) {
+        this.xPos = xPos;
+    }
+
+    public double getyPos() {
+        return yPos;
+    }
+
+    public void setyPos(double yPos) {
+        this.yPos = yPos;
     }
 
     public void setColor(int degreeGraph) {

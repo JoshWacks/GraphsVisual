@@ -23,6 +23,10 @@ public class Graph {
         return vertices.get(pos);//returns the Vertex in that position
     }
 
+    public ArrayList<Vertex> getVertices(){
+        return vertices;
+    }
+
     public void addEdge(int pos1,int pos2){
         getVertex(pos1).addAdjacency(getVertex(pos2));//These 2 vertices are adjacent so we need to add them to each others adjacencies list
         getVertex(pos2).addAdjacency(getVertex(pos1));

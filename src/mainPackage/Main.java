@@ -27,6 +27,7 @@ import java.awt.*;
 public class Main extends Application {
     private static Visuals visuals;
     private static Button addVertexBtn;
+    private static Button addEdgeBtn;
     private static int btnSelected=0;
 
     @Override
@@ -45,10 +46,7 @@ public class Main extends Application {
         group.getChildren().add(canvas);
 
         visuals=new Visuals(canvas);
-        addButtons();
-        group.getChildren().add(addVertexBtn);
-
-
+        addButtons(group);
 
         Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-5);
         scene.setFill(Color.BLACK);
@@ -60,8 +58,11 @@ public class Main extends Application {
         return btnSelected;
     }
 
-    private void addButtons(){
+    private void addButtons(Group group){
         makeVertexBtn();
+        makeEdgeBtn();
+        group.getChildren().add(addVertexBtn);
+        group.getChildren().add(addEdgeBtn);
     }
 
     private void makeVertexBtn(){
@@ -71,7 +72,7 @@ public class Main extends Application {
         Background background=new Background(backgroundFill);
         addVertexBtn.setBackground(background);
 
-        addVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        addVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
         Tooltip t = new Tooltip("To add a vertex to the board click a valid position on the board");
         Tooltip.install(null, t);
         addVertexBtn.setTooltip(t);
@@ -84,16 +85,60 @@ public class Main extends Application {
         addVertexBtn.setOnMouseClicked(event -> {
             if(btnSelected==1){
                 btnSelected=0;
+                toggleBtnOff(addVertexBtn,Color.LIGHTBLUE);
             }
             else{
+                toggleBtnOn(addVertexBtn);
+                toggleBtnOff(addEdgeBtn,Color.ORANGE);
                 btnSelected=1;
             }
         });
     }
 
+    private void makeEdgeBtn(){
+        addEdgeBtn=new Button("Edge");
+        addEdgeBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.ORANGE,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        addEdgeBtn.setBackground(background);
+
+        addEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To add an edge click on two vertices");
+        Tooltip.install(null, t);
+        addEdgeBtn.setTooltip(t);
+
+        addEdgeBtn.setLayoutX(130);
+        addEdgeBtn.setLayoutY(150);
+        addEdgeBtn.setPrefWidth(100);
+        addEdgeBtn.setPrefHeight(40);
+
+        addEdgeBtn.setOnMouseClicked(event -> {
+            if(btnSelected==2){
+                btnSelected=0;
+                toggleBtnOff(addEdgeBtn,Color.ORANGE);
+            }
+            else{
+                toggleBtnOn(addEdgeBtn);
+                toggleBtnOff(addVertexBtn,Color.LIGHTBLUE);
+                btnSelected=2;
+            }
+        });
+    }
+
     private void toggleBtnOn(Button button){
-        BorderStroke borderStroke=new BorderStroke(Color.GREEN,new BorderStrokeStyle(new StrokeType("Solid"),null,null,10,0,null),)
-        Border border=new Border()
+
+        BackgroundFill backgroundFill=new BackgroundFill(Color.LIME,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        button.setBackground(background);
+
+    }
+
+    private void toggleBtnOff(Button button,Color original){
+
+        BackgroundFill backgroundFill=new BackgroundFill(original,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        button.setBackground(background);
+
     }
 
     public static void main(String[] args) {
