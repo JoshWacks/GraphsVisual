@@ -42,7 +42,7 @@ public class Visuals {
     }
 
     private void callCorrectDrawMethod(double x,double y){
-        switch (Main.getBtnSelected()){
+        switch (ConfigureScreen.getBtnSelected()){
             case 0:
                 JOptionPane.showMessageDialog(null,"Please select an option from the draw menu first");
                 return;
@@ -62,7 +62,6 @@ public class Visuals {
                         highlightVertex(v);
 
                         graph.addEdge(selectedVertices[0].getVertexNumber(),selectedVertices[1].getVertexNumber());
-                        System.out.println("Edge between "+selectedVertices[0].getVertexNumber()+" and "+ selectedVertices[1].getVertexNumber());
                         drawEdge(selectedVertices);
                         unhighlightVertex(selectedVertices[0]);
                         unhighlightVertex(selectedVertices[1]);
@@ -152,12 +151,88 @@ public class Visuals {
     }
 
     private void drawEdge(Vertex[] arr){
-        double x1=arr[0].getxPos()+5;
-        double y1=arr[0].getyPos()+5;
-        double x2=arr[1].getxPos()+5;
-        double y2=arr[1].getyPos()+5;
-        gc.setStroke(Color.BLACK);
-        gc.strokeLine(x1,y1,x2,y2);
+        Vertex v0=arr[0];
+        Vertex v1=arr[1];
+
+        Double[]points=new Double[4];
+
+        if(v0.getxPos()<v1.getxPos()||v0.getxPos()==v1.getxPos()){
+            points=findCorrectPoints(arr);
+            gc.setStroke(Color.BLACK);
+            gc.strokeLine(points[0],points[1],points[2],points[3]);
+
+        }else{
+            Vertex[] newArr=new Vertex[2];
+            newArr[0]=v1;
+            newArr[1]=v0;
+            drawEdge(newArr);
+        }
+
+
+    }
+
+    private Double[] findCorrectPoints(Vertex[]arr){
+        Double[] correctPoints=new Double[4];
+        Double shortestDistance=5000D;
+        Double tempDistance=0D;
+        Vertex v0=arr[0];
+        Vertex v1=arr[1];
+
+        double x1=v0.getxPos();
+        double y1=v0.getyPos();
+        double x2=v1.getxPos();
+        double y2=v1.getyPos();
+
+        ArrayList<Pair<Double,Double>> points1=new ArrayList<Pair<Double, Double>>();
+        ArrayList<Pair<Double,Double>> points2=new ArrayList<Pair<Double, Double>>();
+
+        if(x1<x2||x1==x2){
+            for (Double i = x1; i < x1+45; i=i+1) {
+                for(Double j=y1; j<y1+45;j=j+1){
+                    Pair<Double,Double>pair=new Pair<>(i,j);
+                    points1.add(pair);
+                }
+            }
+
+            for (Double i = x2; i <x2+45; i=i+1) {
+                for(Double j=y2; j<y2+45;j=j+1){
+                    Pair<Double,Double>pair=new Pair<>(i,j);
+                    points2.add(pair);
+                }
+            }
+
+            for(Pair<Double,Double>p1:points1){
+                for(Pair<Double,Double>p2:points2){
+                    tempDistance=getDistance(p1.getKey(),p1.getValue(),p2.getKey(),p2.getValue());
+
+                    if(tempDistance<shortestDistance){
+
+                        shortestDistance=tempDistance;
+                        correctPoints[0]=p1.getKey();
+                        correctPoints[1]=p1.getValue();
+                        correctPoints[2]=p2.getKey();
+                        correctPoints[3]=p2.getValue();
+                    }
+                }
+            }
+        }else{
+            Vertex[] newArr=new Vertex[2];
+            newArr[0]=v1;
+            newArr[1]=v0;
+            correctPoints=findCorrectPoints(newArr);
+        }
+        return correctPoints;
+
+
+    }
+
+    public Double getDistance(Double x1,Double y1,Double x2,Double y2){
+        Double firstSqaure=Math.pow((x2-x1),2);
+        Double secondSqaure=Math.pow((y2-y1),2);
+        Double sum=firstSqaure+secondSqaure;
+
+
+        return Math.sqrt(sum);
     }
 
 
