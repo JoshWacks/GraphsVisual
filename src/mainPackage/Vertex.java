@@ -9,6 +9,8 @@ public class Vertex {
     private ArrayList<Vertex>adjacencies =new ArrayList<>();
     private double xPos;
     private double yPos;
+    private double xCentre;
+    private double yCentre;
 
 
     public Vertex(int num,double x,double y){
@@ -53,6 +55,22 @@ public class Vertex {
 
     public void setyPos(double yPos) {
         this.yPos = yPos;
+    }
+
+    public double getxCentre() {
+        return xCentre;
+    }
+
+    public void setxCentre(double xCentre) {
+        this.xCentre = xCentre;
+    }
+
+    public double getyCentre() {
+        return yCentre;
+    }
+
+    public void setyCentre(double yCentre) {
+        this.yCentre = yCentre;
     }
 
     public void setColor(int degreeGraph) {

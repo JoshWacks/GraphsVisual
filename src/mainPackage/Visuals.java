@@ -26,6 +26,8 @@ public class Visuals {
     private int numSelectedVertices=0;
     private Vertex[] selectedVertices=new Vertex[2];
 
+    private Double m,c;
+
     public Visuals(Canvas c){
         canvas=c;
         canvasWidth=canvas.getWidth();
@@ -68,18 +70,11 @@ public class Visuals {
 
                         numSelectedVertices=0;
                     }
-
-
-
-
                 }
                 else{
 
                     JOptionPane.showMessageDialog(null,"Please select a vertex");
                 }
-
-
-
         }
     }
 
@@ -100,6 +95,8 @@ public class Visuals {
             }
 
             Vertex vertex = new Vertex(vertexCount,x,y);
+            vertex.setxCentre(x+20);
+            vertex.setyCentre(y+20);
             graph.addVertex(vertex);
             vertexCount++;
         }
@@ -117,7 +114,7 @@ public class Visuals {
         for(Vertex v:graph.getVertices()){
             tempX=v.getxPos();
             tempY=v.getyPos();
-            if ((tempX - 45 < x && x < tempX + 45) && (tempY - 45 < y && y < tempY + 45)) {
+            if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
                 return false;
             }
         }
@@ -130,7 +127,7 @@ public class Visuals {
         for(Vertex v:graph.getVertices()){
             tempX=v.getxPos();
             tempY=v.getyPos();
-            if ((tempX - 45 < x && x < tempX + 45) && (tempY - 45 < y && y < tempY + 45)) {
+            if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
                 return v;
             }
         }
@@ -154,7 +151,7 @@ public class Visuals {
         Vertex v0=arr[0];
         Vertex v1=arr[1];
 
-        Double[]points=new Double[4];
+        Double[]points;
 
         if(v0.getxPos()<v1.getxPos()||v0.getxPos()==v1.getxPos()){
             points=findCorrectPoints(arr);
@@ -171,6 +168,26 @@ public class Visuals {
 
     }
 
+    private void makeLine(Vertex[]arr){
+        Vertex v0=arr[0];
+        Vertex v1=arr[1];
+
+        double x1=v0.getxCentre();
+        double y1=v0.getyCentre();
+        double x2=v1.getxCentre();
+        double y2=v1.getyCentre();
+
+        m=getGradient(x1,y1,x2,y2);
+        c=y1-(m*x1);
+
+    }
+
+    private Double getGradient(Double x1,Double y1,Double x2,Double y2){
+        return (y2-y1)/(x2-x1);
+    }
+
+
+
     private Double[] findCorrectPoints(Vertex[]arr){
         Double[] correctPoints=new Double[4];
         Double shortestDistance=5000D;
@@ -183,21 +200,37 @@ public class Visuals {
         double x2=v1.getxPos();
         double y2=v1.getyPos();
 
+        double c1x=v0.getxCentre();
+        double c1y=v0.getyCentre();
+        double c2x=v1.getxCentre();
+        double c2y=v1.getyCentre();
+
+
         ArrayList<Pair<Double,Double>> points1=new ArrayList<Pair<Double, Double>>();
         ArrayList<Pair<Double,Double>> points2=new ArrayList<Pair<Double, Double>>();
 
         if(x1<x2||x1==x2){
-            for (Double i = x1; i < x1+45; i=i+1) {
-                for(Double j=y1; j<y1+45;j=j+1){
-                    Pair<Double,Double>pair=new Pair<>(i,j);
-                    points1.add(pair);
+            for (Double i = x1; i < x1+40; i=i+0.5) {
+                for(Double j=y1; j<y1+40;j=j+0.5){
+                    if(onCircle(c1x,c1y,i,j)) {
+                        gc.setStroke(Color.BLUE);
+                        gc.strokeLine(i,j,i,j);
+                        Pair<Double, Double> pair = new Pair<>(i, j);
+                        points1.add(pair);
+                    }
+
                 }
             }
 
-            for (Double i = x2; i <x2+45; i=i+1) {
-                for(Double j=y2; j<y2+45;j=j+1){
-                    Pair<Double,Double>pair=new Pair<>(i,j);
-                    points2.add(pair);
+            for (Double i = x2; i <x2+40; i=i+0.5) {
+                for(Double j=y2; j<y2+40;j=j+0.5){
+                    if(onCircle(c2x,c2y,i,j)) {
+
+                        Pair<Double, Double> pair = new Pair<>(i, j);
+                        gc.setStroke(Color.BLUE);
+                        gc.strokeLine(i,j,i,j);
+                        points2.add(pair);
+                    }
                 }
             }
 
@@ -233,6 +266,16 @@ public class Visuals {
 
 
         return Math.sqrt(sum);
+    }
+
+    private boolean onCircle(Double cx,Double cy,Double x,Double y){
+        Double b1=Math.pow((x-cx),2);
+        Double b2=Math.pow((y-cy),2);
+        //System.out.println(cx+"  "+ cy);
+       // System.out.println(b1+"   "+b2);
+
+
+        return (b1 + b2) == 400;
     }
 
 

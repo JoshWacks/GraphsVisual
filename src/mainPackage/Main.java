@@ -65,6 +65,6 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         launch(args);
-        System.out.println(visuals.getDistance(-2D,-3D,-4D,4D));
+
     }
 }
