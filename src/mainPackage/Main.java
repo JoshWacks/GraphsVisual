@@ -38,19 +38,24 @@ public class Main extends Application {
         primaryStage.setTitle("Graphs Visualised");
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        double width = screenBounds.getWidth()*0.6;
-        double height = screenBounds.getHeight() *0.7;
+        double width = screenBounds.getWidth();
+        double height = screenBounds.getHeight() ;
 
         Group group=new Group();
-        Canvas canvas=new Canvas(width,height);
+        Canvas canvas=new Canvas(width*0.6,height);
         canvas.setLayoutX(0);
         canvas.setLayoutY(screenBounds.getHeight()-height-26);
         group.getChildren().add(canvas);
 
-        visuals=new Visuals(canvas);
+        Canvas displayCanvas=new Canvas(600,400);
+        displayCanvas.setLayoutX(820);
+        displayCanvas.setLayoutY(80);
+        group.getChildren().add(displayCanvas);
+
+
         cs=new ConfigureScreen(group);
         cs.addButtons();
-
+        visuals=new Visuals(canvas,displayCanvas);
 
         Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-5);
         scene.setFill(Color.BLACK);

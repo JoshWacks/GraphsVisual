@@ -19,6 +19,9 @@ public class Vertex {
         yPos=y;
         colour=-1;//Sets the colour of that vertex to -1 representing uncoloured
     }
+    public ArrayList<Vertex>getAdjacencies(){
+        return adjacencies;
+    }
 
     public void addAdjacency(Vertex v){
         adjacencies.add(v);

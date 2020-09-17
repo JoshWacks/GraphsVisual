@@ -3,15 +3,11 @@ package mainPackage;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.util.*;
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
-
+import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class Visuals {
@@ -21,14 +17,16 @@ public class Visuals {
 
     private static int vertexCount=0;
     private static GraphicsContext gc;
-    private static Graph graph=new Graph();
+    private static final Graph graph=new Graph();
 
     private int numSelectedVertices=0;
-    private Vertex[] selectedVertices=new Vertex[2];
+    private final Vertex[] selectedVertices=new Vertex[2];
 
-    private Double m,c;
 
-    public Visuals(Canvas c){
+    private static Canvas displayCanvas=new Canvas();
+    private static GraphicsContext displayGC;
+
+    public Visuals(Canvas c,Canvas dc){
         canvas=c;
         canvasWidth=canvas.getWidth();
         canvasHeight=canvas.getHeight();
@@ -36,14 +34,19 @@ public class Visuals {
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
         gc.setLineWidth(4.0D);
-        gc.fillRect(0,0,canvasWidth,canvasHeight);
+        gc.fillRect(0,250,canvasWidth,canvasHeight);
 
-        canvas.setOnMouseClicked(event -> {
-            callCorrectDrawMethod(event.getX(),event.getY());
-        });
+        displayCanvas=dc;
+        displayGC=displayCanvas.getGraphicsContext2D();
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
+
+
+        canvas.setOnMouseClicked(event -> callCorrectDrawMethod(event.getX(),event.getY()));
     }
 
     private void callCorrectDrawMethod(double x,double y){
+
         switch (ConfigureScreen.getBtnSelected()){
             case 0:
                 JOptionPane.showMessageDialog(null,"Please select an option from the draw menu first");
@@ -168,30 +171,10 @@ public class Visuals {
 
     }
 
-    private void makeLine(Vertex[]arr){
-        Vertex v0=arr[0];
-        Vertex v1=arr[1];
-
-        double x1=v0.getxCentre();
-        double y1=v0.getyCentre();
-        double x2=v1.getxCentre();
-        double y2=v1.getyCentre();
-
-        m=getGradient(x1,y1,x2,y2);
-        c=y1-(m*x1);
-
-    }
-
-    private Double getGradient(Double x1,Double y1,Double x2,Double y2){
-        return (y2-y1)/(x2-x1);
-    }
-
-
-
     private Double[] findCorrectPoints(Vertex[]arr){
         Double[] correctPoints=new Double[4];
         Double shortestDistance=5000D;
-        Double tempDistance=0D;
+        Double tempDistance;
         Vertex v0=arr[0];
         Vertex v1=arr[1];
 
@@ -206,15 +189,16 @@ public class Visuals {
         double c2y=v1.getyCentre();
 
 
-        ArrayList<Pair<Double,Double>> points1=new ArrayList<Pair<Double, Double>>();
-        ArrayList<Pair<Double,Double>> points2=new ArrayList<Pair<Double, Double>>();
+        ArrayList<Pair<Double,Double>> points1= new ArrayList<>();
+        ArrayList<Pair<Double,Double>> points2= new ArrayList<>();
 
         if(x1<x2||x1==x2){
             for (Double i = x1; i < x1+40; i=i+0.5) {
-                for(Double j=y1; j<y1+40;j=j+0.5){
+                for(Double j=y1; j<y1+45;j=j+0.5){
                     if(onCircle(c1x,c1y,i,j)) {
-                        gc.setStroke(Color.BLUE);
-                        gc.strokeLine(i,j,i,j);
+//                        gc.setStroke(Color.RED);
+//                        gc.setLineWidth(3);
+//                        gc.strokeLine(i,j,i,j);
                         Pair<Double, Double> pair = new Pair<>(i, j);
                         points1.add(pair);
                     }
@@ -223,12 +207,13 @@ public class Visuals {
             }
 
             for (Double i = x2; i <x2+40; i=i+0.5) {
-                for(Double j=y2; j<y2+40;j=j+0.5){
+                for(Double j=y2; j<y2+45;j=j+0.5){
                     if(onCircle(c2x,c2y,i,j)) {
 
                         Pair<Double, Double> pair = new Pair<>(i, j);
-                        gc.setStroke(Color.BLUE);
-                        gc.strokeLine(i,j,i,j);
+//                        gc.setStroke(Color.RED);
+//                        gc.setLineWidth(3);
+//                        gc.strokeLine(i,j,i,j);
                         points2.add(pair);
                     }
                 }
@@ -271,11 +256,92 @@ public class Visuals {
     private boolean onCircle(Double cx,Double cy,Double x,Double y){
         Double b1=Math.pow((x-cx),2);
         Double b2=Math.pow((y-cy),2);
-        //System.out.println(cx+"  "+ cy);
-       // System.out.println(b1+"   "+b2);
-
 
         return (b1 + b2) == 400;
+    }
+
+    public static void showList(){
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
+        
+
+        displayGC.setFill(Color.BLACK);
+        displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 16));
+        displayGC.fillText("Vertex |                                         Adjacency's ",2,13);
+        displayGC.fillText("_____________________________________________________________________________",0,14);
+
+        int y=30;
+        int x;
+        for(Vertex v:graph.getVertices()){
+            displayGC.fillText(v.getVertexNumber()+"",20,y);
+            displayGC.fillText("|",49,y);
+            x=55;
+            for(Vertex vertex:v.getAdjacencies()){
+                displayGC.fillText(vertex.getVertexNumber()+"",x,y);
+                displayGC.fillText(",",x+10,y);
+                x=x+20;
+            }
+            displayGC.fillText("_____________________________________________________________________________",0,y+1);
+            y=y+16;
+
+
+        }
+    }
+
+    public static void showMatrix(){
+        //TODO check if it is better to make the matrix eaxh time or just keep a matrix in the graph class
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
+        int n=graph.getVertices().size();
+        boolean[][] adj_matrix=new boolean[n][n];
+
+        for (Vertex v:graph.getVertices()) {//makes the matrix based off the linked list we have
+            for (Vertex adj:v.getAdjacencies()) {
+                adj_matrix[ v.getVertexNumber()][adj.getVertexNumber()]=true;
+
+            }
+        }
+
+        displayGC.setFill(Color.BLACK);
+        displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 18));
+        for (int i = 0; i < n; i++) {
+            displayGC.setFill(Color.BLACK);
+            displayGC.fillText(i+"",30+(i*25),15);//horizontal number
+            displayGC.fillText("|",45+(i*25),15);
+
+            displayGC.fillText(i+"",10,40+(i*25));//vertical numbers
+            displayGC.fillText("____",0,43+(i*25));
+            displayGC.fillText("|",22,40+(i*25));
+            for (int j = 0; j < n; j++) {
+                if(adj_matrix[i][j]){
+                    displayGC.setFill(Color.BLUE);
+                    if(i==j){
+                        displayGC.setFill(Color.GREEN);
+                    }
+                    displayGC.fillText("T",30+(j*25),40+(i*25));
+                }else{
+                    if(i==j){
+                        displayGC.setFill(Color.GREEN);
+                    }
+                    displayGC.setFill(Color.RED);
+                    displayGC.fillText("F",30+(j*25),40+(i*25));
+                }
+                displayGC.setFill(Color.BLACK);
+                displayGC.fillText("|",45+(j*25),40+(i*25));
+                displayGC.fillText("_____", j *27,43+(i*25));
+
+
+            }
+        }
+
+
+
+        for(int i=0;i<n;i++){
+            for (int j=0;j<n;j++){
+                System.out.print(adj_matrix[i][j]+" ");
+            }
+            System.out.println();
+        }
     }
 
 
