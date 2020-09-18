@@ -15,8 +15,10 @@ public class ConfigureScreen {
     private static Button addVertexBtn;
     private static Button addEdgeBtn;
     private static Group group;
-    private static Button viewList;;
-    private static Button viewMatrix;
+    private static Button viewListBtn;
+    private static Button viewMatrixBtn;
+    private static Button checkCompleteBtn;
+    private static Button checkConnectedBtn;
 
     private static int btnSelected=0;
 
@@ -29,11 +31,15 @@ public class ConfigureScreen {
         makeEdgeBtn();
         makeViewListBtn();
         makeViewMatrixBtn();
+        makeCompleteBtn();
+        makeConnectedBtn();
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
-        group.getChildren().add(viewList);
-        group.getChildren().add(viewMatrix);
+        group.getChildren().add(viewListBtn);
+        group.getChildren().add(viewMatrixBtn);
+        group.getChildren().add(checkCompleteBtn);
+        group.getChildren().add(checkConnectedBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -103,48 +109,87 @@ public class ConfigureScreen {
     }
 
     private void makeViewListBtn(){
-        viewList=new Button("View Adjacency List");
-        viewList.setTextFill(Color.BLACK);
+        viewListBtn=new Button("View Adjacency List");
+        viewListBtn.setTextFill(Color.BLACK);
         BackgroundFill backgroundFill=new BackgroundFill(Color.DARKORCHID,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
-        viewList.setBackground(background);
+        viewListBtn.setBackground(background);
 
-        viewList.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        viewListBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
         Tooltip t = new Tooltip("Click here to view the current graph as an adjacency list");
         Tooltip.install(null, t);
-        viewList.setTooltip(t);
+        viewListBtn.setTooltip(t);
 
-        viewList.setLayoutX(1100);
-        viewList.setLayoutY(10);
-        viewList.setPrefWidth(250);
-        viewList.setPrefHeight(30);
+        viewListBtn.setLayoutX(1080);
+        viewListBtn.setLayoutY(10);
+        viewListBtn.setPrefWidth(250);
+        viewListBtn.setPrefHeight(30);
 
-        viewList.setOnMouseClicked(event -> {
+        viewListBtn.setOnMouseClicked(event -> {
             Visuals.showList();
         });
 
     }
 
     private void makeViewMatrixBtn(){
-        viewMatrix=new Button("View Matrix");
-        viewMatrix.setTextFill(Color.BLACK);
+        viewMatrixBtn=new Button("View Matrix");
+        viewMatrixBtn.setTextFill(Color.BLACK);
         BackgroundFill backgroundFill=new BackgroundFill(Color.FIREBRICK,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
-        viewMatrix.setBackground(background);
+        viewMatrixBtn.setBackground(background);
 
-        viewMatrix.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        viewMatrixBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
         Tooltip t = new Tooltip("Click here to view the current graph as matrix");
         Tooltip.install(null, t);
-        viewMatrix.setTooltip(t);
+        viewMatrixBtn.setTooltip(t);
 
-        viewMatrix.setLayoutX(850);
-        viewMatrix.setLayoutY(10);
-        viewMatrix.setPrefWidth(200);
-        viewMatrix.setPrefHeight(30);
+        viewMatrixBtn.setLayoutX(850);
+        viewMatrixBtn.setLayoutY(10);
+        viewMatrixBtn.setPrefWidth(200);
+        viewMatrixBtn.setPrefHeight(30);
 
-        viewMatrix.setOnMouseClicked(event -> {
-            Visuals.showMatrix();
-        });
+        viewMatrixBtn.setOnMouseClicked(event -> Visuals.showMatrix());
+
+    }
+
+    private void makeCompleteBtn(){
+        checkCompleteBtn=new Button("Complete?");
+        checkCompleteBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.CORAL,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        checkCompleteBtn.setBackground(background);
+
+        checkCompleteBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here to check if the graph is a complete graph");
+        Tooltip.install(null, t);
+        checkCompleteBtn.setTooltip(t);
+
+        checkCompleteBtn.setLayoutX(825);
+        checkCompleteBtn.setLayoutY(500);
+        checkCompleteBtn.setPrefWidth(130);
+        checkCompleteBtn.setPrefHeight(5);
+
+        checkCompleteBtn.setOnMouseClicked(event -> Visuals.checkCompleted());
+    }
+
+    private void makeConnectedBtn(){
+        checkConnectedBtn=new Button("Connected?");
+        checkConnectedBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKKHAKI,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        checkConnectedBtn.setBackground(background);
+
+        checkConnectedBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here to check if the graph is a connected graph");
+        Tooltip.install(null, t);
+        checkConnectedBtn.setTooltip(t);
+
+        checkConnectedBtn.setLayoutX(825);
+        checkConnectedBtn.setLayoutY(550);
+        checkConnectedBtn.setPrefWidth(130);
+        checkConnectedBtn.setPrefHeight(5);
+
+        checkConnectedBtn.setOnMouseClicked(event -> Visuals.checkConnected());
 
     }
 

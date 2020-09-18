@@ -26,6 +26,8 @@ public class Visuals {
     private static Canvas displayCanvas=new Canvas();
     private static GraphicsContext displayGC;
 
+    private static GraphMethods graphMethods;
+
     public Visuals(Canvas c,Canvas dc){
         canvas=c;
         canvasWidth=canvas.getWidth();
@@ -34,15 +36,16 @@ public class Visuals {
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
         gc.setLineWidth(4.0D);
-        gc.fillRect(0,250,canvasWidth,canvasHeight);
+        gc.fillRect(canvas.getLayoutX(),0,canvasWidth,canvasHeight);
 
         displayCanvas=dc;
         displayGC=displayCanvas.getGraphicsContext2D();
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
 
-
         canvas.setOnMouseClicked(event -> callCorrectDrawMethod(event.getX(),event.getY()));
+
+        graphMethods=new GraphMethods(graph);
     }
 
     private void callCorrectDrawMethod(double x,double y){
@@ -110,7 +113,7 @@ public class Visuals {
 
     private boolean validVertexPos(double x,double y){
         Double tempX,tempY;
-        if(y+40>canvasHeight || x-40<0|| x+40>canvasWidth){//basic bounds checking
+        if((y+40)>canvasHeight || (x-40)<0|| (x+40)>canvasWidth||(y-40)<0){//basic bounds checking
             return false;
         }
 
@@ -267,7 +270,7 @@ public class Visuals {
 
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 16));
-        displayGC.fillText("Vertex |                                         Adjacency's ",2,13);
+        displayGC.fillText("Vertex |                                         Neighbourhood ",2,13);
         displayGC.fillText("_____________________________________________________________________________",0,14);
 
         int y=30;
@@ -320,10 +323,11 @@ public class Visuals {
                     }
                     displayGC.fillText("T",30+(j*25),40+(i*25));
                 }else{
+
+                    displayGC.setFill(Color.RED);
                     if(i==j){
                         displayGC.setFill(Color.GREEN);
                     }
-                    displayGC.setFill(Color.RED);
                     displayGC.fillText("F",30+(j*25),40+(i*25));
                 }
                 displayGC.setFill(Color.BLACK);
@@ -334,14 +338,36 @@ public class Visuals {
             }
         }
 
+    }
 
+    public static void checkCompleted(){
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
+        displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 28));
+        displayGC.setFill(Color.DODGERBLUE);
 
-        for(int i=0;i<n;i++){
-            for (int j=0;j<n;j++){
-                System.out.print(adj_matrix[i][j]+" ");
-            }
-            System.out.println();
+        if(graphMethods.checkComplete()){
+            displayGC.fillText("This is a complete graph",5,displayCanvas.getHeight()-20);
         }
+        else{
+            displayGC.fillText("This is an incomplete graph",5,displayCanvas.getHeight()-20);
+
+        }
+    }
+
+    public static void checkConnected(){
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
+        displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 28));
+        displayGC.setFill(Color.DODGERBLUE);
+        if(graphMethods.checkConnectedGraph()){
+            displayGC.fillText("This is a connected graph",5,displayCanvas.getHeight()-20);
+        }
+        else{
+            displayGC.fillText("This is a non-connected graph",5,displayCanvas.getHeight()-20);
+
+        }
+
     }
 
 

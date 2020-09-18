@@ -42,9 +42,9 @@ public class Main extends Application {
         double height = screenBounds.getHeight() ;
 
         Group group=new Group();
-        Canvas canvas=new Canvas(width*0.6,height);
+        Canvas canvas=new Canvas(width*0.6,height*0.7);
         canvas.setLayoutX(0);
-        canvas.setLayoutY(screenBounds.getHeight()-height-26);
+        canvas.setLayoutY(200);
         group.getChildren().add(canvas);
 
         Canvas displayCanvas=new Canvas(600,400);
