@@ -1,7 +1,7 @@
 package mainPackage;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+//TODO move everything from GraphMethods into here
 
 public class Graph {
 
@@ -59,6 +59,8 @@ public class Graph {
         return  maxAdjcenciesPos;
 
     }
+
+
 
 
 

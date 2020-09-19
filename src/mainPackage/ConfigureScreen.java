@@ -20,6 +20,7 @@ public class ConfigureScreen {
     private static Button checkCompleteBtn;
     private static Button checkConnectedBtn;
     private static Button addWeightedEdgeBtn;
+    private static Button getMWSPBtn;
 
     private static int btnSelected=0;
 
@@ -35,6 +36,7 @@ public class ConfigureScreen {
         makeViewMatrixBtn();
         makeCompleteBtn();
         makeConnectedBtn();
+        makeMWSPBtn();
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
@@ -43,6 +45,7 @@ public class ConfigureScreen {
         group.getChildren().add(checkCompleteBtn);
         group.getChildren().add(checkConnectedBtn);
         group.getChildren().add(addWeightedEdgeBtn);
+        group.getChildren().add(getMWSPBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -227,6 +230,27 @@ public class ConfigureScreen {
         checkConnectedBtn.setPrefHeight(5);
 
         checkConnectedBtn.setOnMouseClicked(event -> Visuals.checkConnected());
+
+    }
+
+    private void makeMWSPBtn(){
+        getMWSPBtn=new Button("Get Minimum Weighted Spanning Tree");
+        getMWSPBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DODGERBLUE,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        getMWSPBtn.setBackground(background);
+
+        getMWSPBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here to make the minimum weighted spanning tree of this graph if possible");
+        Tooltip.install(null, t);
+        getMWSPBtn.setTooltip(t);
+
+        getMWSPBtn.setLayoutX(985);
+        getMWSPBtn.setLayoutY(500);
+        getMWSPBtn.setPrefWidth(370);
+        getMWSPBtn.setPrefHeight(5);
+
+        getMWSPBtn.setOnMouseClicked(event -> Visuals.makeMWST());
 
     }
 

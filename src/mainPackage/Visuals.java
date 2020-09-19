@@ -58,7 +58,7 @@ public class Visuals {
                 JOptionPane.showMessageDialog(null, "Please select an option from the draw menu first");
                 return;
             case 1:
-                drawVertix(x - 5, y - 5);//we offset it by 5 to find the a more precise location of the pointer
+                drawVertix(x - 5, y - 5,gc);//we offset it by 5 to find the a more precise location of the pointer
                 break;
         }
         if(ConfigureScreen.getBtnSelected()==2||ConfigureScreen.getBtnSelected()==3) {
@@ -77,7 +77,7 @@ public class Visuals {
                     graph.addEdge(selectedVertices[0].getVertexNumber(), selectedVertices[1].getVertexNumber());
 
                     if(ConfigureScreen.getBtnSelected()==2){
-                        drawEdge(selectedVertices);
+                        drawEdge(selectedVertices,gc);
                     }else{
                         drawWeightedEdge(selectedVertices);
                     }
@@ -96,7 +96,7 @@ public class Visuals {
 
     }
 
-    private void drawVertix(double x,double y){
+    private void drawVertix(double x,double y,GraphicsContext gc){
 
         if(validVertexPos(x,y)) {
 
@@ -165,7 +165,7 @@ public class Visuals {
         gc.strokeOval(v.getxPos(),v.getyPos(),40,40);
     }
 
-    private void drawEdge(Vertex[] arr){
+    private void drawEdge(Vertex[] arr,GraphicsContext gc){
         Vertex v0=arr[0];
         Vertex v1=arr[1];
 
@@ -180,7 +180,7 @@ public class Visuals {
             Vertex[] newArr=new Vertex[2];
             newArr[0]=v1;
             newArr[1]=v0;
-            drawEdge(newArr);
+            drawEdge(newArr,gc);
         }
     }
 
@@ -203,7 +203,11 @@ public class Visuals {
         Vertex v1=arr[1];
 
         Edge edge=new Edge(v0,v1,weight);
-        Graph.addEdge(edge);
+        Edge revEdge=new Edge(v1,v0,weight);//TODO remember will be a problem with directed graphs
+        if((!Graph.getEdges().contains(edge))&& (!Graph.getEdges().contains(revEdge))){//Gets rid of problem with double edges
+            Graph.addEdge(edge);
+        }
+
         Double[]points;
 
         if(v0.getxPos()<v1.getxPos()||v0.getxPos()==v1.getxPos()){
@@ -217,7 +221,7 @@ public class Visuals {
             gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
 
             gc.setFill(Color.WHITE);
-            int incr=0;
+            int incr;
             if(temp.length()==1){
                 incr=3;
             }else{
@@ -227,10 +231,32 @@ public class Visuals {
             weight=-1;
 
         }else{
+            Vertex tempVertex=v1;
+            v1=v0;
+            v0=tempVertex;
+
             Vertex[] newArr=new Vertex[2];
             newArr[0]=v1;
             newArr[1]=v0;
-            drawWeightedEdge(newArr);
+
+            gc.setStroke(Color.BLACK);
+            points=findCorrectPoints(newArr);
+            gc.strokeLine(points[0],points[1],points[2],points[3]);
+
+            double[] midpoint=getMidpoint(v1,v0);
+            gc.setFill(Color.BLACK);
+            gc.setLineWidth(2.0D);
+            gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
+
+            gc.setFill(Color.WHITE);
+            int incr;
+            if(temp.length()==1){
+                incr=3;
+            }else{
+                incr=8;
+            }
+            gc.fillText(weight+"",midpoint[0]-incr,midpoint[1]+7);
+            weight=-1;
         }
 
 
@@ -479,6 +505,15 @@ public class Visuals {
         else{
             displayGC.fillText("This is a non-connected graph",5,displayCanvas.getHeight()-20);
 
+        }
+
+    }
+
+    public static void makeMWST(){
+        ArrayList<Edge>usedEdges=graphMethods.constructMWSP();
+
+        for(Edge e:usedEdges){
+            System.out.println(e.getVertexA().getVertexNumber()+" "+e.getVertexB().getVertexNumber()+" "+e.getWeight());
         }
 
     }
