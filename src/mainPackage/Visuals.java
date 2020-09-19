@@ -28,6 +28,8 @@ public class Visuals {
 
     private static GraphMethods graphMethods;
 
+    private int weight=-1;
+
     public Visuals(Canvas c,Canvas dc){
         canvas=c;
         canvasWidth=canvas.getWidth();
@@ -46,42 +48,52 @@ public class Visuals {
         canvas.setOnMouseClicked(event -> callCorrectDrawMethod(event.getX(),event.getY()));
 
         graphMethods=new GraphMethods(graph);
+        //gc.fillArc();
     }
 
     private void callCorrectDrawMethod(double x,double y){
 
-        switch (ConfigureScreen.getBtnSelected()){
+        switch (ConfigureScreen.getBtnSelected()) {
             case 0:
-                JOptionPane.showMessageDialog(null,"Please select an option from the draw menu first");
+                JOptionPane.showMessageDialog(null, "Please select an option from the draw menu first");
                 return;
             case 1:
-                drawVertix(x-5,y-5);//we offset it by 5 to find the a more precise location of the pointer
+                drawVertix(x - 5, y - 5);//we offset it by 5 to find the a more precise location of the pointer
                 break;
-            case 2:
-                if(getSelectedVertex(x - 5, y - 5).getVertexNumber()!=-1) {
-                    Vertex v=getSelectedVertex(x - 5, y - 5);
-                    if(numSelectedVertices==0){
-                        selectedVertices[0]=v;
-                        highlightVertex(v);
-                        numSelectedVertices=1;
-                    }
-                    else if(numSelectedVertices==1){
-                        selectedVertices[1]=v;
-                        highlightVertex(v);
-
-                        graph.addEdge(selectedVertices[0].getVertexNumber(),selectedVertices[1].getVertexNumber());
-                        drawEdge(selectedVertices);
-                        unhighlightVertex(selectedVertices[0]);
-                        unhighlightVertex(selectedVertices[1]);
-
-                        numSelectedVertices=0;
-                    }
-                }
-                else{
-
-                    JOptionPane.showMessageDialog(null,"Please select a vertex");
-                }
         }
+        if(ConfigureScreen.getBtnSelected()==2||ConfigureScreen.getBtnSelected()==3) {
+            if (getSelectedVertex(x - 5, y - 5).getVertexNumber() != -1) {
+                Vertex v = getSelectedVertex(x - 5, y - 5);
+                if (numSelectedVertices == 0) {
+                    selectedVertices[0] = v;
+                    highlightVertex(v);
+                    numSelectedVertices = 1;
+                } else if (numSelectedVertices == 1) {
+                    selectedVertices[1] = v;
+                    highlightVertex(v);
+                    unhighlightVertex(selectedVertices[0]);
+                    unhighlightVertex(selectedVertices[1]);
+
+                    graph.addEdge(selectedVertices[0].getVertexNumber(), selectedVertices[1].getVertexNumber());
+
+                    if(ConfigureScreen.getBtnSelected()==2){
+                        drawEdge(selectedVertices);
+                    }else{
+                        drawWeightedEdge(selectedVertices);
+                    }
+
+
+
+                    numSelectedVertices = 0;
+                }
+            } else {
+
+                JOptionPane.showMessageDialog(null, "Please select a vertex");
+            }
+        }
+
+
+
     }
 
     private void drawVertix(double x,double y){
@@ -170,6 +182,58 @@ public class Visuals {
             newArr[1]=v0;
             drawEdge(newArr);
         }
+    }
+
+    private void drawWeightedEdge(Vertex[] arr){
+
+        String temp="";
+        while (weight==-1)  {
+            temp = JOptionPane.showInputDialog("Please enter a weight for this edge");
+
+            if((temp!=null ) && temp.length()>0){
+                weight=Integer.parseInt(temp);
+            }else {
+                weight=-1;
+                JOptionPane.showMessageDialog(null,"Please enter a valid number");
+            }
+
+        }
+
+        Vertex v0=arr[0];
+        Vertex v1=arr[1];
+
+        Edge edge=new Edge(v0,v1,weight);
+        Graph.addEdge(edge);
+        Double[]points;
+
+        if(v0.getxPos()<v1.getxPos()||v0.getxPos()==v1.getxPos()){
+            gc.setStroke(Color.BLACK);
+            points=findCorrectPoints(arr);
+            gc.strokeLine(points[0],points[1],points[2],points[3]);
+
+            double[] midpoint=getMidpoint(v0,v1);
+            gc.setFill(Color.BLACK);
+            gc.setLineWidth(2.0D);
+            gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
+
+            gc.setFill(Color.WHITE);
+            int incr=0;
+            if(temp.length()==1){
+                incr=3;
+            }else{
+                incr=8;
+            }
+            gc.fillText(weight+"",midpoint[0]-incr,midpoint[1]+7);
+            weight=-1;
+
+        }else{
+            Vertex[] newArr=new Vertex[2];
+            newArr[0]=v1;
+            newArr[1]=v0;
+            drawWeightedEdge(newArr);
+        }
+
+
 
 
     }
@@ -263,6 +327,17 @@ public class Visuals {
         return (b1 + b2) == 400;
     }
 
+    private double[] getMidpoint(Vertex v1,Vertex v2){
+        double[] midpoint=new double[2];
+
+        double xMid=(v1.getxCentre()+v2.getxCentre())/2.0;
+        double yMid=(v1.getyCentre()+v2.getyCentre())/2.0;
+
+        midpoint[0]=xMid;
+        midpoint[1]=yMid;
+        return  midpoint;
+    }
+
     public static void showList(){
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0,0,displayCanvas.getWidth(),displayCanvas.getHeight());
@@ -281,8 +356,14 @@ public class Visuals {
             x=55;
             for(Vertex vertex:v.getAdjacencies()){
                 displayGC.fillText(vertex.getVertexNumber()+"",x,y);
-                displayGC.fillText(",",x+10,y);
-                x=x+20;
+                int incr=0;
+                if(vertex.getVertexNumber()>9||vertex.getVertexNumber()<-9){
+                    incr=8;
+                }else{
+                    incr=0;
+                }
+                displayGC.fillText(",",x+10+incr,y);
+                x=x+20+incr;
             }
             displayGC.fillText("_____________________________________________________________________________",0,y+1);
             y=y+16;
@@ -321,7 +402,18 @@ public class Visuals {
                     if(i==j){
                         displayGC.setFill(Color.GREEN);
                     }
-                    displayGC.fillText("T",30+(j*25),40+(i*25));
+                    if(isWeightedEdge(i,j)[0]==1){
+                        int incr=0;
+                        if(isWeightedEdge(i,j)[1]>9 || isWeightedEdge(i,j)[1]<-9){//more than 2 digits so we need to account for that spacing
+                            incr=-3;
+                        }else{
+                            incr=0;
+                        }
+                        displayGC.fillText(isWeightedEdge(i,j)[1]+"",30+(j*25)+incr,40+(i*25));
+                    }else{
+                        displayGC.fillText("T",30+(j*25),40+(i*25));
+                    }
+
                 }else{
 
                     displayGC.setFill(Color.RED);
@@ -338,6 +430,27 @@ public class Visuals {
             }
         }
 
+    }
+
+    private static int[] isWeightedEdge(int i,int j){
+        int[] results=new int[2];
+        for(Edge e: Graph.getEdges()){
+            Vertex v1=graph.getVertex(i);
+            Vertex v2=graph.getVertex(j);
+            if(e.getVertexA().equals(v1)&& e.getVertexB().equals(v2)){
+                results[0]=1;
+                results[1]=e.getWeight();
+                return results;
+
+            }
+            else if(e.getVertexA().equals(v2)&& e.getVertexB().equals(v1)){
+                results[0]=1;
+                results[1]=e.getWeight();
+                return results;
+
+            }
+        }
+        return results;
     }
 
     public static void checkCompleted(){

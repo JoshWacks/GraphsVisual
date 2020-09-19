@@ -19,6 +19,7 @@ public class ConfigureScreen {
     private static Button viewMatrixBtn;
     private static Button checkCompleteBtn;
     private static Button checkConnectedBtn;
+    private static Button addWeightedEdgeBtn;
 
     private static int btnSelected=0;
 
@@ -29,6 +30,7 @@ public class ConfigureScreen {
     public void addButtons(){
         makeVertexBtn();
         makeEdgeBtn();
+        makeWeightedEdgeBtn();
         makeViewListBtn();
         makeViewMatrixBtn();
         makeCompleteBtn();
@@ -40,6 +42,7 @@ public class ConfigureScreen {
         group.getChildren().add(viewMatrixBtn);
         group.getChildren().add(checkCompleteBtn);
         group.getChildren().add(checkConnectedBtn);
+        group.getChildren().add(addWeightedEdgeBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -48,10 +51,11 @@ public class ConfigureScreen {
     public static Group getGroup(){
         return group;
     }
+
     private void makeVertexBtn(){
         addVertexBtn=new Button("Vertex");
         addVertexBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.LIGHTBLUE,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKRED,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         addVertexBtn.setBackground(background);
 
@@ -68,11 +72,12 @@ public class ConfigureScreen {
         addVertexBtn.setOnMouseClicked(event -> {
             if(btnSelected==1){
                 btnSelected=0;
-                toggleBtnOff(addVertexBtn,Color.LIGHTBLUE);
+                toggleBtnOff(addVertexBtn,Color.DARKRED);
             }
             else{
                 toggleBtnOn(addVertexBtn);
-                toggleBtnOff(addEdgeBtn,Color.ORANGE);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
                 btnSelected=1;
             }
         });
@@ -81,7 +86,7 @@ public class ConfigureScreen {
     private void makeEdgeBtn(){
         addEdgeBtn=new Button("Edge");
         addEdgeBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.ORANGE,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKOLIVEGREEN,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         addEdgeBtn.setBackground(background);
 
@@ -98,12 +103,44 @@ public class ConfigureScreen {
         addEdgeBtn.setOnMouseClicked(event -> {
             if(btnSelected==2){
                 btnSelected=0;
-                toggleBtnOff(addEdgeBtn,Color.ORANGE);
+                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
             }
             else{
                 toggleBtnOn(addEdgeBtn);
-                toggleBtnOff(addVertexBtn,Color.LIGHTBLUE);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKRED);
                 btnSelected=2;
+            }
+        });
+    }
+
+    private void makeWeightedEdgeBtn(){
+        addWeightedEdgeBtn=new Button("Weighted Edge");
+        addWeightedEdgeBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        addWeightedEdgeBtn.setBackground(background);
+
+        addWeightedEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To add an weighted edge select two vertices then enter the weight in the popup ");
+        Tooltip.install(null, t);
+        addWeightedEdgeBtn.setTooltip(t);
+
+        addWeightedEdgeBtn.setLayoutX(250);
+        addWeightedEdgeBtn.setLayoutY(150);
+        addWeightedEdgeBtn.setPrefWidth(200);
+        addWeightedEdgeBtn.setPrefHeight(40);
+
+        addWeightedEdgeBtn.setOnMouseClicked(event -> {
+            if(btnSelected==3){
+                btnSelected=0;
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+            }
+            else{
+                toggleBtnOn(addWeightedEdgeBtn);
+                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
+                toggleBtnOff(addVertexBtn,Color.DARKRED);
+                btnSelected=3;
             }
         });
     }

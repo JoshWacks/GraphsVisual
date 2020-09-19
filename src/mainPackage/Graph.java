@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Graph {
 
     private ArrayList<Vertex>vertices=new ArrayList<>();
+    private static ArrayList<Edge>edges=new ArrayList<>();
 
     public Graph(){
 
@@ -15,6 +16,18 @@ public class Graph {
 
         vertices.add(v);
 
+    }
+
+    public static void addEdge(Edge e){
+        edges.add(e);
+    }
+
+    public static Edge getEdge(int pos){
+        return edges.get(pos);
+    }
+
+    public static ArrayList<Edge> getEdges(){
+        return edges;
     }
 
     public Vertex getVertex(int pos){

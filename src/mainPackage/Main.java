@@ -28,14 +28,11 @@ public class Main extends Application {
     private static Visuals visuals;
     private static ConfigureScreen cs;
 
-    private static Button addVertexBtn;
-    private static Button addEdgeBtn;
-    private static int btnSelected=0;
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Graphs Visualised");
+        primaryStage.setResizable(false);
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         double width = screenBounds.getWidth();
@@ -55,6 +52,7 @@ public class Main extends Application {
 
         cs=new ConfigureScreen(group);
         cs.addButtons();
+        //TODO check if I should make the visuals object here
         visuals=new Visuals(canvas,displayCanvas);
 
         Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-5);
