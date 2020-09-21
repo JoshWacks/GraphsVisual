@@ -22,10 +22,6 @@ public class Graph {
         edges.add(e);
     }
 
-    public static Edge getEdge(int pos){
-        return edges.get(pos);
-    }
-
     public static ArrayList<Edge> getEdges(){
         return edges;
     }
@@ -39,8 +35,13 @@ public class Graph {
     }
 
     public void addEdge(int pos1,int pos2){
-        getVertex(pos1).addAdjacency(getVertex(pos2));//These 2 vertices are adjacent so we need to add them to each others adjacencies list
-        getVertex(pos2).addAdjacency(getVertex(pos1));
+        if(pos1==pos2){
+            getVertex(pos2).addAdjacency(getVertex(pos1));//Circular edge only needs to be added once
+        }
+        else {
+            getVertex(pos1).addAdjacency(getVertex(pos2));//These 2 vertices are adjacent so we need to add them to each others adjacencies list
+            getVertex(pos2).addAdjacency(getVertex(pos1));
+        }
     }
 
     public int getBiggestVertex(){

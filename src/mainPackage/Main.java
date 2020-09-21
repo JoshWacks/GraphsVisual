@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 //convention for buttons
 //---->   1:add a vertex
 //---->   2:add an edge
+//---->   3:add a weighted edge
 
 
 public class Main extends Application {

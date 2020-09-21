@@ -3,6 +3,7 @@ package mainPackage;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class Visuals {
     private final Vertex[] selectedVertices=new Vertex[2];
 
 
-    private static Canvas displayCanvas=new Canvas();
+    private static Canvas displayCanvas;
     private static GraphicsContext displayGC;
 
     private static GraphMethods graphMethods;
@@ -40,6 +41,8 @@ public class Visuals {
         gc.setLineWidth(4.0D);
         gc.fillRect(canvas.getLayoutX(),0,canvasWidth,canvasHeight);
 
+
+
         displayCanvas=dc;
         displayGC=displayCanvas.getGraphicsContext2D();
         displayGC.setFill(Color.ANTIQUEWHITE);
@@ -48,7 +51,7 @@ public class Visuals {
         canvas.setOnMouseClicked(event -> callCorrectDrawMethod(event.getX(),event.getY()));
 
         graphMethods=new GraphMethods(graph);
-        //gc.fillArc();
+
     }
 
     private void callCorrectDrawMethod(double x,double y){
@@ -77,13 +80,14 @@ public class Visuals {
                     graph.addEdge(selectedVertices[0].getVertexNumber(), selectedVertices[1].getVertexNumber());
 
                     if(ConfigureScreen.getBtnSelected()==2){
-                        drawEdge(selectedVertices,gc);
+                        if(selectedVertices[0].equals(selectedVertices[1])){
+                            drawArcEdge(selectedVertices[0]);
+                        }else {
+                            drawEdge(selectedVertices);
+                        }
                     }else{
                         drawWeightedEdge(selectedVertices);
                     }
-
-
-
                     numSelectedVertices = 0;
                 }
             } else {
@@ -91,10 +95,9 @@ public class Visuals {
                 JOptionPane.showMessageDialog(null, "Please select a vertex");
             }
         }
-
-
-
     }
+
+
 
     private void drawVertix(double x,double y,GraphicsContext gc){
 
@@ -165,7 +168,7 @@ public class Visuals {
         gc.strokeOval(v.getxPos(),v.getyPos(),40,40);
     }
 
-    private void drawEdge(Vertex[] arr,GraphicsContext gc){
+    private void drawEdge(Vertex[] arr){
         Vertex v0=arr[0];
         Vertex v1=arr[1];
 
@@ -180,9 +183,20 @@ public class Visuals {
             Vertex[] newArr=new Vertex[2];
             newArr[0]=v1;
             newArr[1]=v0;
-            drawEdge(newArr,gc);
+            drawEdge(newArr);
         }
     }
+
+    private void drawArcEdge(Vertex vertex) {
+        double cx=vertex.getxCentre();
+        double cy=vertex.getyCentre();
+        gc.setStroke(Color.BLACK);
+
+
+        gc.strokeArc(cx,cy+2,40,35,180,270,ArcType.OPEN);
+
+    }
+
 
     private void drawWeightedEdge(Vertex[] arr){
 
@@ -550,12 +564,4 @@ public class Visuals {
         }
 
     }
-
-//    private void drawWeightedEdge(Vertex[] vArr,int weight ){
-//        Vertex vA=new Vertex();
-//    }
-
-
-
-
 }

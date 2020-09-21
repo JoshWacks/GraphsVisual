@@ -9,6 +9,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ConfigureScreen {
 
@@ -22,6 +23,8 @@ public class ConfigureScreen {
     private static Button addWeightedEdgeBtn;
     private static Button getMWSPBtn;
 
+    private static ArrayList<Button>buttons=new ArrayList<>();
+
     private static int btnSelected=0;
 
     public ConfigureScreen(Group gr){
@@ -29,9 +32,11 @@ public class ConfigureScreen {
     }
 
     public void addButtons(){
-        makeVertexBtn();
-        makeEdgeBtn();
-        makeWeightedEdgeBtn();
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        makeVertexBtn(background);
+        makeEdgeBtn(background);
+        makeWeightedEdgeBtn(background);
         makeViewListBtn();
         makeViewMatrixBtn();
         makeCompleteBtn();
@@ -55,11 +60,9 @@ public class ConfigureScreen {
         return group;
     }
 
-    private void makeVertexBtn(){
+    private void makeVertexBtn(Background background){
         addVertexBtn=new Button("Vertex");
         addVertexBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKRED,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
         addVertexBtn.setBackground(background);
 
         addVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
@@ -75,22 +78,21 @@ public class ConfigureScreen {
         addVertexBtn.setOnMouseClicked(event -> {
             if(btnSelected==1){
                 btnSelected=0;
-                toggleBtnOff(addVertexBtn,Color.DARKRED);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
             }
             else{
                 toggleBtnOn(addVertexBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
-                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 btnSelected=1;
             }
         });
+        buttons.add(addVertexBtn);
     }
 
-    private void makeEdgeBtn(){
+    private void makeEdgeBtn(Background background){
         addEdgeBtn=new Button("Edge");
         addEdgeBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKOLIVEGREEN,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
         addEdgeBtn.setBackground(background);
 
         addEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
@@ -106,22 +108,21 @@ public class ConfigureScreen {
         addEdgeBtn.setOnMouseClicked(event -> {
             if(btnSelected==2){
                 btnSelected=0;
-                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
             }
             else{
                 toggleBtnOn(addEdgeBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
-                toggleBtnOff(addVertexBtn,Color.DARKRED);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 btnSelected=2;
             }
         });
+        buttons.add(addEdgeBtn);
     }
 
-    private void makeWeightedEdgeBtn(){
+    private void makeWeightedEdgeBtn(Background background){
         addWeightedEdgeBtn=new Button("Weighted Edge");
         addWeightedEdgeBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
         addWeightedEdgeBtn.setBackground(background);
 
         addWeightedEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
@@ -141,11 +142,12 @@ public class ConfigureScreen {
             }
             else{
                 toggleBtnOn(addWeightedEdgeBtn);
-                toggleBtnOff(addEdgeBtn,Color.DARKOLIVEGREEN);
-                toggleBtnOff(addVertexBtn,Color.DARKRED);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 btnSelected=3;
             }
         });
+        buttons.add(addWeightedEdgeBtn);
     }
 
     private void makeViewListBtn(){
@@ -165,10 +167,8 @@ public class ConfigureScreen {
         viewListBtn.setPrefWidth(250);
         viewListBtn.setPrefHeight(30);
 
-        viewListBtn.setOnMouseClicked(event -> {
-            Visuals.showList();
-        });
-
+        viewListBtn.setOnMouseClicked(event -> Visuals.showList());
+        buttons.add(viewListBtn);
     }
 
     private void makeViewMatrixBtn(){
@@ -189,7 +189,7 @@ public class ConfigureScreen {
         viewMatrixBtn.setPrefHeight(30);
 
         viewMatrixBtn.setOnMouseClicked(event -> Visuals.showMatrix());
-
+        buttons.add(viewMatrixBtn);
     }
 
     private void makeCompleteBtn(){
