@@ -201,65 +201,49 @@ public class Visuals {
 
         Vertex v0=arr[0];
         Vertex v1=arr[1];
-
-        Edge edge=new Edge(v0,v1,weight);
-        Edge revEdge=new Edge(v1,v0,weight);//TODO remember will be a problem with directed graphs
-        if((!Graph.getEdges().contains(edge))&& (!Graph.getEdges().contains(revEdge))){//Gets rid of problem with double edges
-            Graph.addEdge(edge);
+        Edge edge;
+        if(v0.getVertexNumber()<v1.getVertexNumber()){//making sure the smallest vertex is always first
+           edge =new Edge(v0,v1,weight);
+        }else{
+            edge=new Edge(v1,v0,weight);
         }
+        Graph.addEdge(edge);
+
+
 
         Double[]points;
+        Vertex[] newArr=new Vertex[2];
 
-        if(v0.getxPos()<v1.getxPos()||v0.getxPos()==v1.getxPos()){
-            gc.setStroke(Color.BLACK);
-            points=findCorrectPoints(arr);
-            gc.strokeLine(points[0],points[1],points[2],points[3]);
-
-            double[] midpoint=getMidpoint(v0,v1);
-            gc.setFill(Color.BLACK);
-            gc.setLineWidth(2.0D);
-            gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
-
-            gc.setFill(Color.WHITE);
-            int incr;
-            if(temp.length()==1){
-                incr=3;
-            }else{
-                incr=8;
-            }
-            gc.fillText(weight+"",midpoint[0]-incr,midpoint[1]+7);
-            weight=-1;
-
-        }else{
+        if(!(v0.getxPos()<=v1.getxPos())){//correct order for drawing
             Vertex tempVertex=v1;
             v1=v0;
             v0=tempVertex;
 
-            Vertex[] newArr=new Vertex[2];
+
             newArr[0]=v1;
             newArr[1]=v0;
-
-            gc.setStroke(Color.BLACK);
-            points=findCorrectPoints(newArr);
-            gc.strokeLine(points[0],points[1],points[2],points[3]);
-
-            double[] midpoint=getMidpoint(v1,v0);
-            gc.setFill(Color.BLACK);
-            gc.setLineWidth(2.0D);
-            gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
-
-            gc.setFill(Color.WHITE);
-            int incr;
-            if(temp.length()==1){
-                incr=3;
-            }else{
-                incr=8;
-            }
-            gc.fillText(weight+"",midpoint[0]-incr,midpoint[1]+7);
-            weight=-1;
+        }else{
+            newArr=arr;
         }
 
+        gc.setStroke(Color.BLACK);
+        points=findCorrectPoints(newArr);
+        gc.strokeLine(points[0],points[1],points[2],points[3]);
 
+        double[] midpoint=getMidpoint(v0,v1);
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(2.0D);
+        gc.fillRect(midpoint[0]-15, midpoint[1]-15, 35, 35);
+
+        gc.setFill(Color.WHITE);
+        int incr;
+        if(temp.length()==1){
+            incr=3;
+        }else{
+            incr=8;
+        }
+        gc.fillText(weight+"",midpoint[0]-incr,midpoint[1]+7);
+        weight=-1;
 
 
     }
@@ -511,12 +495,67 @@ public class Visuals {
 
     public static void makeMWST(){
         ArrayList<Edge>usedEdges=graphMethods.constructMWSP();
+        int numVerticesPerLine=(usedEdges.size()+1)/2;
+        int xPos;
+        int yPos=10;
+        int yIncr=0;
+        int xIncr=0;
+        int xSpace=120;
+        int ySpace=120;
 
-        for(Edge e:usedEdges){
-            System.out.println(e.getVertexA().getVertexNumber()+" "+e.getVertexB().getVertexNumber()+" "+e.getWeight());
+        ArrayList<Vertex> drawnVertices=new ArrayList<>();
+        Vertex vertex;
+        if(numVerticesPerLine>5){
+            xSpace=80;
+            ySpace=80;
+        }
+
+        for(int i=0;i<usedEdges.size();i++){
+
+
+            if ((i+2)>numVerticesPerLine){
+                yIncr=yIncr+1;
+                yPos=10+(yIncr*ySpace);
+
+                xIncr=0;
+                numVerticesPerLine=numVerticesPerLine+numVerticesPerLine;
+            }
+
+            Edge edge=usedEdges.get(i);
+            System.out.println(edge.toSring());
+            for (int j = 0; j <2 ; j++) {
+                if(j==0) {
+                    vertex = edge.getVertexA();
+                }
+                else {
+                    vertex = edge.getVertexB();
+                }
+                if(!drawnVertices.contains(vertex)){
+                    displayGC.setFill(Color.FIREBRICK);
+                    drawnVertices.add(vertex);
+                    xPos=10+(xIncr*xSpace);
+                    xIncr=xIncr+1;
+                    displayGC.fillOval(xPos,yPos,40,40);
+                    displayGC.setFill(Color.BLACK);
+                    displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+                    if ((vertex.getVertexNumber() + "").length() == 1) {
+                        displayGC.fillText(vertex.getVertexNumber() + "", xPos + 15, yPos + 25);
+                    } else {
+                        displayGC.fillText(vertex.getVertexNumber() + "", xPos + 10, yPos + 25);
+                    }
+                }
+            }
+
+
         }
 
     }
+
+//    private void drawWeightedEdge(Vertex[] vArr,int weight ){
+//        Vertex vA=new Vertex();
+//    }
+
+
 
 
 }

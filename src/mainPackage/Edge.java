@@ -36,4 +36,8 @@ public class Edge {
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    public String toSring(){
+        return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" Weight: "+ weight;
+    }
 }
