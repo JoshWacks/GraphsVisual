@@ -36,6 +36,10 @@ public class Vertex {
         return colour;
     }
 
+    public void setColour(int colour){
+        this.colour=colour;
+    }
+
     public int getVertexNumber(){
         return vertexNumber;
     }

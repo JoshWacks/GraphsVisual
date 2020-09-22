@@ -191,7 +191,10 @@ public class Visuals {
             Vertex[] newArr = new Vertex[2];
             newArr[0] = v1;
             newArr[1] = v0;
-            drawEdge(newArr);
+            points = findCorrectPoints(newArr);
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(3.0D);
+            gc.strokeLine(points[0], points[1], points[2], points[3]);
         }
         Pair<Double,Double> pair1=new Pair<>(points[0],points[1]);
         Pair<Double,Double> pair2=new Pair<>(points[2],points[3]);
@@ -588,5 +591,15 @@ public class Visuals {
         stage.show();
 
 
+    }
+
+    public static void colourGraph(){
+
+        ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
+
+
+        for(Pair<Vertex,Integer> pair:pairs){
+            System.out.println(pair.getKey().getVertexNumber()+"  "+pair.getValue());
+        }
     }
 }

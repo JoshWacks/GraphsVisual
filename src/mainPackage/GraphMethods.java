@@ -1,5 +1,6 @@
 package mainPackage;
 
+import javafx.util.Pair;
 import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
@@ -119,5 +120,43 @@ public class GraphMethods {
 
         return usedWeightedEdges;
 
+    }
+
+    public ArrayList<Pair<Vertex,Integer>> colourGraph(){
+        for(Vertex vertex:graph.getVertices()){
+            vertex.setColour(-1);
+        }
+
+        ArrayList<Pair<Vertex,Integer>> pairs=new ArrayList<>();
+
+        int largestVertexPos;
+        Vertex largestVertex;
+        Integer[] colours=new Integer[10];
+        Arrays.fill(colours,-1);//sets all elements to -1 to say not used
+        Integer selectedColour=-1;
+        while (!graph.checkAllColoured()){
+
+            largestVertexPos=graph.getBiggestVertex();
+            largestVertex=graph.getVertex(largestVertexPos);
+
+            for (Vertex v:largestVertex.getAdjacencies()){
+                if(v.getColour()!=-1){
+                    colours[v.getColour()]=1;//To indicate we have used that colour
+                }
+            }
+
+            for(int i=0;i<colours.length;i++){
+                if(colours[i]==-1){
+                    selectedColour=i;
+                    break;
+                }
+            }
+            largestVertex.setColour(selectedColour);
+            Pair<Vertex,Integer>pair=new Pair<>(largestVertex,selectedColour);
+            pairs.add(pair);
+            Arrays.fill(colours,-1);
+
+        }
+        return pairs;
     }
 }

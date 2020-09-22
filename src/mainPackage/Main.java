@@ -52,7 +52,7 @@ public class Main extends Application {
 
 
 
-        Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-8);
+        Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-10);
         scene.setFill(Color.BLACK);
         primaryStage.setScene(scene);
         primaryStage.show();

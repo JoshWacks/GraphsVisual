@@ -92,6 +92,15 @@ public class Graph {
 
     }
 
+    public boolean checkAllColoured(){
+        for(Vertex vertex:vertices){
+            if(vertex.getColour()==-1){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
 

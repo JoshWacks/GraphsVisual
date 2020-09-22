@@ -22,6 +22,7 @@ public class ConfigureScreen {
     private static Button checkConnectedBtn;
     private static Button addWeightedEdgeBtn;
     private static Button getMWSPBtn;
+    private static Button colourGraphBtn;
 
     private static ArrayList<Button>buttons=new ArrayList<>();
 
@@ -42,6 +43,7 @@ public class ConfigureScreen {
         makeCompleteBtn();
         makeConnectedBtn();
         makeMWSPBtn();
+        makeColourBtn();
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
@@ -51,6 +53,7 @@ public class ConfigureScreen {
         group.getChildren().add(checkConnectedBtn);
         group.getChildren().add(addWeightedEdgeBtn);
         group.getChildren().add(getMWSPBtn);
+        group.getChildren().add(colourGraphBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -251,6 +254,27 @@ public class ConfigureScreen {
         getMWSPBtn.setPrefHeight(5);
 
         getMWSPBtn.setOnMouseClicked(event -> Visuals.makeMWST());
+
+    }
+
+    private void makeColourBtn(){
+        colourGraphBtn=new Button("Colour Graph");
+        colourGraphBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        colourGraphBtn.setBackground(background);
+
+        colourGraphBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here to colour the graph using the graph colouring algorithm");
+        Tooltip.install(null, t);
+        colourGraphBtn.setTooltip(t);
+
+        colourGraphBtn.setLayoutX(985);
+        colourGraphBtn.setLayoutY(550);
+        colourGraphBtn.setPrefWidth(370);
+        colourGraphBtn.setPrefHeight(5);
+
+        colourGraphBtn.setOnMouseClicked(event -> Visuals.colourGraph());
 
     }
 
