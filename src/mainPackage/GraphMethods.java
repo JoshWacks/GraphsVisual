@@ -1,5 +1,8 @@
 package mainPackage;
 
+import jdk.nashorn.internal.scripts.JO;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -47,16 +50,36 @@ public class GraphMethods {
             }
         }
     }
+    private boolean validSpanningTree(){
+        if(!checkConnectedGraph()){//first checks if it is connected
+            JOptionPane.showMessageDialog(null,"This graph is not connected, thus a MWSP cannot be made");
+            return false;
+        }
 
-    public ArrayList<Edge> constructMWSP(){
-        //TODO make a MWSP that works for all types of trees even non-spanning
+        if(Graph.getEdges().size()>0){
+            JOptionPane.showMessageDialog(null,"All the edges must be weighted to create a MWSP");
+            return false;
+        }
+
+        if(graph.getVertices().size()==0){
+            JOptionPane.showMessageDialog(null,"Please Create A Graph First");
+            return false;
+        }
+        return true;
+    }
+
+    public ArrayList<WeightedEdge> constructMWSP(){
+        ArrayList<WeightedEdge> usedWeightedEdges =new ArrayList<>();
+        if(!validSpanningTree()){
+            return usedWeightedEdges;
+        }
+
         ArrayList<Vertex>vertices=graph.getVertices();
-        ArrayList<Edge>edges=Graph.getEdges();
+        ArrayList<WeightedEdge> weightedEdges =Graph.getWeightedEdges();
 
         ArrayList<Vertex>visited=new ArrayList<>();
-        ArrayList<Edge>usedEdges=new ArrayList<>();
 
-        Edge nextEdge = null;
+        WeightedEdge nextWeightedEdge = null;
 
         int cheapest;
         visited.add(vertices.get(0));
@@ -67,34 +90,34 @@ public class GraphMethods {
 
 
              for(Vertex v:visited){
-                 for(Edge e:edges){
+                 for(WeightedEdge e: weightedEdges){
                      if(e.getVertexA().equals(v)){
                          if(e.getWeight()<cheapest && (!visited.contains(e.getVertexB()))){
                              cheapest=e.getWeight();
-                             nextEdge=e;
+                             nextWeightedEdge =e;
                          }
                      }
                      else if(e.getVertexB().equals(v)){
                          if(e.getWeight()<cheapest && (!visited.contains(e.getVertexA()))){
                              cheapest=e.getWeight();
-                             nextEdge=e;
+                             nextWeightedEdge =e;
                          }
                      }
                  }
              }
-             usedEdges.add(nextEdge);
-             if(!visited.contains(nextEdge.getVertexA())){
-                 visited.add(nextEdge.getVertexA());
+             usedWeightedEdges.add(nextWeightedEdge);
+             if(!visited.contains(nextWeightedEdge.getVertexA())){
+                 visited.add(nextWeightedEdge.getVertexA());
              }
-             if(!visited.contains(nextEdge.getVertexB())){
-                 visited.add(nextEdge.getVertexB());
+             if(!visited.contains(nextWeightedEdge.getVertexB())){
+                 visited.add(nextWeightedEdge.getVertexB());
              }
-             edges.remove(nextEdge);
-             nextEdge=null;
+             weightedEdges.remove(nextWeightedEdge);
+             nextWeightedEdge =null;
         }
 
 
-        return usedEdges;
+        return usedWeightedEdges;
 
     }
 }

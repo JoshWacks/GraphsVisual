@@ -1,17 +1,23 @@
 package mainPackage;
 
+import javafx.util.Pair;
+
 public class Edge {
-    private Vertex vertexA;
-    private Vertex vertexB;
-    private int weight;
+    protected Vertex vertexA;
+    protected Vertex vertexB;
+    protected Pair<Double,Double> firstXY;
+    protected Pair<Double,Double> secondXY;
+
+    public Edge(){}
 
 
-    public Edge(Vertex v1,Vertex v2,int w){
-        vertexA=v1;
-        vertexB=v2;
-        weight=w;
-
+    public Edge(Vertex vA,Vertex vB,Pair<Double,Double> firstXY,Pair<Double,Double> secondXY){
+        vertexA=vA;
+        vertexB=vB;
+        this.firstXY=firstXY;
+        this.secondXY=secondXY;
     }
+
 
     public Vertex getVertexA() {
         return vertexA;
@@ -29,15 +35,11 @@ public class Edge {
         this.vertexB = vertexB;
     }
 
-    public int getWeight() {
-        return weight;
-    }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 
     public String toSring(){
-        return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" Weight: "+ weight;
+        return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" FirstXY: ("+firstXY.getKey()+";"+firstXY.getValue()+
+                ")  SecondXY:  ("+ secondXY.getKey()+";"+secondXY.getValue()+")\n";
     }
+
 }

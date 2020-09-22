@@ -1,11 +1,13 @@
 package mainPackage;
 
+import javax.swing.*;
 import java.util.ArrayList;
 //TODO move everything from GraphMethods into here
 
 public class Graph {
 
     private ArrayList<Vertex>vertices=new ArrayList<>();
+    private static ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
     private static ArrayList<Edge>edges=new ArrayList<>();
 
     public Graph(){
@@ -18,12 +20,44 @@ public class Graph {
 
     }
 
-    public static void addEdge(Edge e){
-        edges.add(e);
+    public void addWeightedEdge(WeightedEdge e){
+        weightedEdges.add(e);
+        int pos1=e.vertexA.getVertexNumber();
+        int pos2=e.vertexB.getVertexNumber();
+        addEdgeAdjacencies(pos1,pos2);
     }
 
-    public static ArrayList<Edge> getEdges(){
+    public static ArrayList<WeightedEdge> getWeightedEdges(){
+        return weightedEdges;
+    }
+
+    public void addEdge(Edge e){
+        edges.add(e);
+        int pos1=e.vertexA.getVertexNumber();
+        int pos2=e.vertexB.getVertexNumber();
+        addEdgeAdjacencies(pos1,pos2);
+
+    }
+
+    public static ArrayList<Edge> getEdges() {
         return edges;
+    }
+
+    public boolean validEdge(Vertex v0, Vertex v1){
+        for(Vertex vertex:v0.getAdjacencies()){
+            if(vertex.equals(v1)){
+                return false;
+            }
+        }
+        for(WeightedEdge we:weightedEdges){
+            if(we.getVertexA().equals(v0) && we.getVertexB().equals(v1)){
+                return false;
+            }
+            else if(we.getVertexB().equals(v0) && we.getVertexB().equals(v1)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public Vertex getVertex(int pos){
@@ -34,14 +68,11 @@ public class Graph {
         return vertices;
     }
 
-    public void addEdge(int pos1,int pos2){
-        if(pos1==pos2){
-            getVertex(pos2).addAdjacency(getVertex(pos1));//Circular edge only needs to be added once
-        }
-        else {
+    public void addEdgeAdjacencies(int pos1,int pos2){
+        if (pos1 != pos2) {
             getVertex(pos1).addAdjacency(getVertex(pos2));//These 2 vertices are adjacent so we need to add them to each others adjacencies list
-            getVertex(pos2).addAdjacency(getVertex(pos1));
         }
+        getVertex(pos2).addAdjacency(getVertex(pos1));//Circular edge only needs to be added once
     }
 
     public int getBiggestVertex(){

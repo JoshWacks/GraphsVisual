@@ -49,12 +49,17 @@ public class Main extends Application {
         cs=new ConfigureScreen(group);
         cs.addButtons();
         //TODO check if I should make the visuals object here
-        visuals=new Visuals(canvas,displayCanvas);
 
-        Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-5);
+
+
+        Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-8);
         scene.setFill(Color.BLACK);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+
+        visuals=new Visuals(canvas,displayCanvas);
     }
 
 
