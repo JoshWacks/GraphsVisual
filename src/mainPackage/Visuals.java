@@ -1,7 +1,7 @@
 package mainPackage;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,11 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class Visuals {
@@ -35,6 +37,7 @@ public class Visuals {
     private static GraphMethods graphMethods;
 
     private int weight = -1;
+
 
     public Visuals(Canvas c, Canvas dc) {
         canvas = c;
@@ -594,12 +597,62 @@ public class Visuals {
     }
 
     public static void colourGraph(){
-
         ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
+        ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();;
+        Runnable colour=() ->{
+
+            for (int i = 0; i < pairs.size(); i++) {
+                Pair<Vertex, Integer> pair=pairs.get(i);
+                if(!pair.getValue().equals(-1)){
+                    gc.setLineWidth(2.0D);
+                    gc.setFill(getColour(pair.getValue()));
+                    gc.fillOval(pair.getKey().getxPos(),pair.getKey().getyPos(),40,40);
+
+                    gc.setFill(Color.BLACK);
+                    gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+                    if ((pair.getKey().getVertexNumber() + "").length() == 1) {
+                        gc.fillText(pair.getKey().getVertexNumber() + "", pair.getKey().getxPos() + 15, pair.getKey().getyPos() + 25);
+                    } else {
+                        gc.fillText(pair.getKey().getVertexNumber() + "", pair.getKey().getxPos() + 10, pair.getKey().getyPos() + 25);
+                    }
+
+                    Pair<Vertex, Integer> tempPair=new Pair<>(pair.getKey(),-1);
+                    pairs.set(i,tempPair);
+                    break;
+                }
+            }
+            Pair<Vertex, Integer> pair=pairs.get(pairs.size()-1);
+            if(pair.getValue()==-1){//if the last vertex has been coloured
+
+                executorService.shutdown();
+            }
+        };
 
 
-        for(Pair<Vertex,Integer> pair:pairs){
-            System.out.println(pair.getKey().getVertexNumber()+"  "+pair.getValue());
+            Platform.runLater(() -> {//Method of running on the UI thread
+                executorService.scheduleAtFixedRate(colour, 10, 1500, TimeUnit.MILLISECONDS);//every 1500 milliseconds these methods are run
+
+            });
+
+    }
+
+    private static Color getColour(int num){
+        switch (num){
+            case 0:
+                return Color.MAGENTA;
+            case 1:
+                return Color.CYAN;
+            case 2:
+                return Color.LIMEGREEN;
+            case 3:
+                return Color.CRIMSON;
+            case 4:
+                return Color.PLUM;
+            case 5:
+                return Color.GOLD;
+            default:
+                return Color.GREENYELLOW;
         }
     }
+
 }

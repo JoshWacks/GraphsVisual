@@ -122,7 +122,7 @@ public class GraphMethods {
 
     }
 
-    public ArrayList<Pair<Vertex,Integer>> colourGraph(){
+    public  ArrayList<Pair<Vertex,Integer>> colourGraph(){
         for(Vertex vertex:graph.getVertices()){
             vertex.setColour(-1);
         }
