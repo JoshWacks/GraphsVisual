@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 //---->   1:add a vertex
 //---->   2:add an edge
 //---->   3:add a weighted edge
+//---->   4:Delete a vertex
+//---->   5:Delete an edge
 
 
 public class Main extends Application {

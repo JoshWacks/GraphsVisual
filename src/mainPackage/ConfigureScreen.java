@@ -23,6 +23,8 @@ public class ConfigureScreen {
     private static Button addWeightedEdgeBtn;
     private static Button getMWSPBtn;
     private static Button colourGraphBtn;
+    private static Button deleteEdgeBtn;
+    private static Button deleteVertexBtn;
 
     private static ArrayList<Button>buttons=new ArrayList<>();
 
@@ -34,6 +36,7 @@ public class ConfigureScreen {
 
     public void addButtons(){
         BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);
+        BackgroundFill backgroundFillDel=new BackgroundFill(Color.TOMATO,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         makeVertexBtn(background);
         makeEdgeBtn(background);
@@ -44,6 +47,8 @@ public class ConfigureScreen {
         makeConnectedBtn();
         makeMWSPBtn();
         makeColourBtn();
+        makeDeleteEdgeBtn(new Background(backgroundFillDel));
+        makeDeleteVertexBtn(new Background(backgroundFillDel));
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
@@ -54,6 +59,8 @@ public class ConfigureScreen {
         group.getChildren().add(addWeightedEdgeBtn);
         group.getChildren().add(getMWSPBtn);
         group.getChildren().add(colourGraphBtn);
+        group.getChildren().add(deleteEdgeBtn);
+        group.getChildren().add(deleteVertexBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -87,6 +94,8 @@ public class ConfigureScreen {
                 toggleBtnOn(addVertexBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 btnSelected=1;
             }
         });
@@ -103,7 +112,7 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         addEdgeBtn.setTooltip(t);
 
-        addEdgeBtn.setLayoutX(130);
+        addEdgeBtn.setLayoutX(125);
         addEdgeBtn.setLayoutY(150);
         addEdgeBtn.setPrefWidth(100);
         addEdgeBtn.setPrefHeight(40);
@@ -117,6 +126,8 @@ public class ConfigureScreen {
                 toggleBtnOn(addEdgeBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 btnSelected=2;
             }
         });
@@ -133,7 +144,7 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         addWeightedEdgeBtn.setTooltip(t);
 
-        addWeightedEdgeBtn.setLayoutX(250);
+        addWeightedEdgeBtn.setLayoutX(245);
         addWeightedEdgeBtn.setLayoutY(150);
         addWeightedEdgeBtn.setPrefWidth(200);
         addWeightedEdgeBtn.setPrefHeight(40);
@@ -147,16 +158,83 @@ public class ConfigureScreen {
                 toggleBtnOn(addWeightedEdgeBtn);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 btnSelected=3;
             }
         });
         buttons.add(addWeightedEdgeBtn);
     }
 
+    private void makeDeleteVertexBtn(Background background){
+        deleteVertexBtn=new Button("Delete Vertex");
+        deleteVertexBtn.setTextFill(Color.BLACK);
+        deleteVertexBtn.setBackground(background);
+
+        deleteVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To delete an vertex click here then select an vertex \nAll connected edges will also be deleted");
+        Tooltip.install(null, t);
+        deleteVertexBtn.setTooltip(t);
+
+        deleteVertexBtn.setLayoutX(465);
+        deleteVertexBtn.setLayoutY(150);
+        deleteVertexBtn.setPrefWidth(170);
+        deleteVertexBtn.setPrefHeight(40);
+
+        deleteVertexBtn.setOnMouseClicked(event -> {
+            if(btnSelected==4){
+                btnSelected=0;
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+            }
+            else{
+                toggleBtnOn(deleteVertexBtn);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                btnSelected=3;
+            }
+        });
+        buttons.add(deleteVertexBtn);
+    }
+
+
+    private void makeDeleteEdgeBtn(Background background){
+        deleteEdgeBtn=new Button("Delete Edge");
+        deleteEdgeBtn.setTextFill(Color.BLACK);
+        deleteEdgeBtn.setBackground(background);
+
+        deleteEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To delete an edge click here then select an edge");
+        Tooltip.install(null, t);
+        deleteEdgeBtn.setTooltip(t);
+
+        deleteEdgeBtn.setLayoutX(655);
+        deleteEdgeBtn.setLayoutY(150);
+        deleteEdgeBtn.setPrefWidth(160);
+        deleteEdgeBtn.setPrefHeight(40);
+
+        deleteEdgeBtn.setOnMouseClicked(event -> {
+            if(btnSelected==5){
+                btnSelected=0;
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+            }
+            else{
+                toggleBtnOn(deleteEdgeBtn);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                btnSelected=5;
+            }
+        });
+        buttons.add(deleteEdgeBtn);
+    }
+
     private void makeViewListBtn(){
         viewListBtn=new Button("View Adjacency List");
         viewListBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKORCHID,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.FORESTGREEN,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         viewListBtn.setBackground(background);
 
@@ -165,8 +243,8 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         viewListBtn.setTooltip(t);
 
-        viewListBtn.setLayoutX(1080);
-        viewListBtn.setLayoutY(10);
+        viewListBtn.setLayoutX(1100);
+        viewListBtn.setLayoutY(20);
         viewListBtn.setPrefWidth(250);
         viewListBtn.setPrefHeight(30);
 
@@ -177,7 +255,7 @@ public class ConfigureScreen {
     private void makeViewMatrixBtn(){
         viewMatrixBtn=new Button("View Matrix");
         viewMatrixBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.FIREBRICK,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.FORESTGREEN,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         viewMatrixBtn.setBackground(background);
 
@@ -187,7 +265,7 @@ public class ConfigureScreen {
         viewMatrixBtn.setTooltip(t);
 
         viewMatrixBtn.setLayoutX(850);
-        viewMatrixBtn.setLayoutY(10);
+        viewMatrixBtn.setLayoutY(20);
         viewMatrixBtn.setPrefWidth(200);
         viewMatrixBtn.setPrefHeight(30);
 
@@ -277,6 +355,8 @@ public class ConfigureScreen {
         colourGraphBtn.setOnMouseClicked(event -> Visuals.colourGraph());
 
     }
+
+
 
     private void toggleBtnOn(Button button){
 

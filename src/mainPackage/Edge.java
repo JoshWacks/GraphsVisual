@@ -10,6 +10,10 @@ public class Edge {
 
     public Edge(){}
 
+    public Edge(Vertex vA,Vertex vB){
+        vertexA=vA;
+        vertexB=vB;
+    }
 
     public Edge(Vertex vA,Vertex vB,Pair<Double,Double> firstXY,Pair<Double,Double> secondXY){
         vertexA=vA;
@@ -33,6 +37,30 @@ public class Edge {
 
     public void setVertexB(Vertex vertexB) {
         this.vertexB = vertexB;
+    }
+
+    public boolean liesOnEdge(double x,double y){
+        double prod=x*getGradient();
+        double sum=prod+getC();
+        System.out.println("Y: "+ y+" Sum: "+sum+" M:" +getGradient()+" C:"+ getC());
+        if(sum-4<y && sum+4>y){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    private double getGradient(){
+        double dy=firstXY.getValue()-secondXY.getValue();
+        double dx=firstXY.getKey()-secondXY.getKey();
+
+        return (dy/dx);
+    }
+
+    private double getC(){
+        return (firstXY.getValue()-(getGradient()*firstXY.getKey()));
     }
 
 

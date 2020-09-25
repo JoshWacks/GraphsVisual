@@ -68,7 +68,7 @@ public class Graph {
         return vertices;
     }
 
-    public void addEdgeAdjacencies(int pos1,int pos2){
+    private void addEdgeAdjacencies(int pos1,int pos2){
         if (pos1 != pos2) {
             getVertex(pos1).addAdjacency(getVertex(pos2));//These 2 vertices are adjacent so we need to add them to each others adjacencies list
         }
@@ -99,6 +99,14 @@ public class Graph {
             }
         }
         return true;
+    }
+
+    public void deleteEdge(Edge e){
+        edges.remove(e);
+    }
+
+    public void deleteWeightedEdge(WeightedEdge weightedEdge){
+        weightedEdges.remove(weightedEdge);
     }
 
 

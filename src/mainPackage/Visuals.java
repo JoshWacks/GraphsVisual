@@ -69,7 +69,10 @@ public class Visuals {
                 return;
             case 1:
                 drawVertix(x - 5, y - 5, gc);//we offset it by 5 to find the a more precise location of the pointer
-                break;
+                return;
+            case 5:
+                deleteEdge(x,y);
+                return;
         }
         if (ConfigureScreen.getBtnSelected() == 2 || ConfigureScreen.getBtnSelected() == 3) {
             if (getSelectedVertex(x - 5, y - 5).getVertexNumber() != -1) {
@@ -89,7 +92,6 @@ public class Visuals {
                         return;
                     }
 
-                    //graph.addEdgeAdjacencies(selectedVertices[0].getVertexNumber(), selectedVertices[1].getVertexNumber());
 
                     if (ConfigureScreen.getBtnSelected() == 2) {//2 stands for normal edge
                         if (selectedVertices[0].equals(selectedVertices[1])) {
@@ -107,6 +109,7 @@ public class Visuals {
                 JOptionPane.showMessageDialog(null, "Please select a vertex");
             }
         }
+
     }
 
 
@@ -182,7 +185,7 @@ public class Visuals {
         Vertex v0 = arr[0];
         Vertex v1 = arr[1];
 
-        Double[] points = new Double[0];
+        Double[] points ;
 
         if (v0.getxPos() < v1.getxPos() || v0.getxPos() == v1.getxPos()) {
             points = findCorrectPoints(arr);
@@ -213,7 +216,10 @@ public class Visuals {
 
 
         gc.strokeArc(cx, cy + 2, 40, 35, 180, 270, ArcType.OPEN);
-
+        Pair<Double,Double> pair1=new Pair<>(vertex.getxPos(),vertex.getyPos());
+        Pair<Double,Double> pair2=new Pair<>(vertex.getxPos(),vertex.getyPos());
+        Edge edge=new Edge(vertex,vertex,pair1,pair2);
+        graph.addEdge(edge);
     }
 
 
@@ -597,6 +603,7 @@ public class Visuals {
     }
 
     public static void colourGraph(){
+        resetColors();
         ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();;
         Runnable colour=() ->{
@@ -630,10 +637,26 @@ public class Visuals {
 
 
             Platform.runLater(() -> {//Method of running on the UI thread
-                executorService.scheduleAtFixedRate(colour, 10, 1500, TimeUnit.MILLISECONDS);//every 1500 milliseconds these methods are run
+                executorService.scheduleAtFixedRate(colour, 10, 1700, TimeUnit.MILLISECONDS);//every 1500 milliseconds these methods are run
 
             });
 
+    }
+
+    private static void resetColors(){
+        for(Vertex vertex:graph.getVertices()){
+            gc.setLineWidth(2.0D);
+            gc.setFill(Color.BURLYWOOD);
+            gc.fillOval(vertex.getxPos(),vertex.getyPos(),40,40);
+
+            gc.setFill(Color.BLACK);
+            gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+            if ((vertex.getVertexNumber() + "").length() == 1) {
+                gc.fillText(vertex.getVertexNumber() + "", vertex.getxPos() + 15, vertex.getyPos() + 25);
+            } else {
+                gc.fillText(vertex.getVertexNumber() + "", vertex.getxPos() + 10, vertex.getyPos() + 25);
+            }
+        }
     }
 
     private static Color getColour(int num){
@@ -653,6 +676,55 @@ public class Visuals {
             default:
                 return Color.GREENYELLOW;
         }
+    }
+
+    private static void deleteEdge(double x,double y){
+        if(getSelectedEdge(x,y).vertexA.getVertexNumber()==-1){
+            JOptionPane.showMessageDialog(null,"Please make sure to select an edge");
+            return;
+        }
+
+        System.out.println(getSelectedEdge(x,y).toSring());
+
+    }
+
+    private static Edge getSelectedEdge(double x,double y){
+        for(Edge edge:Graph.getEdges()){
+            if(edge.liesOnEdge(x,y)){
+                return edge;
+            }
+//            for(int i=0;i<5;i++){
+//                if(edge.liesOnEdge(x+i,y)){
+//                    return edge;
+//                }
+//                if(edge.liesOnEdge(x,y+i)){
+//                    return edge;
+//                }
+//                if(edge.liesOnEdge(x-i,y)){
+//                    return edge;
+//                }
+//                if(edge.liesOnEdge(x,y-i)){
+//                    return edge;
+//                }
+//                if(edge.liesOnEdge(x+i,y+i)){
+//                    return edge;
+//                }
+//                if(edge.liesOnEdge(x-i,y)){
+//                    return edge;
+//                }
+//            }
+
+        }
+
+        for (WeightedEdge weightedEdge:Graph.getWeightedEdges()){
+            if(weightedEdge.liesOnEdge(x,y)){
+                return weightedEdge;
+            }
+        }
+        Vertex vertex=new Vertex(-1,-1,-1);
+
+        Edge edge=new Edge(vertex,vertex);
+        return edge;
     }
 
 }
