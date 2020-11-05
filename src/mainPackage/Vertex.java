@@ -23,13 +23,17 @@ public class Vertex {
         yCentre=-1;
     }
     public ArrayList<Vertex>getAdjacencies(){
-        return adjacencies;
+        ArrayList<Vertex>newAdj =new ArrayList<>();
+        for(Vertex v:adjacencies){
+            if(v!=null){
+                newAdj.add(v);
+            }
+        }
+        return newAdj;
     }
 
     public void removeAdjacency(Vertex vertex){
-        if(adjacencies.contains(vertex)) {
-            adjacencies.remove(vertex);
-        }
+        adjacencies.remove(vertex);
     }
 
     public void addAdjacency(Vertex v){

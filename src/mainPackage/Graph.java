@@ -28,7 +28,13 @@ public class Graph {
     }
 
     public ArrayList<WeightedEdge> getWeightedEdges(){
-        return weightedEdges;
+        ArrayList<WeightedEdge>newWEdges=new ArrayList<>();
+        for(WeightedEdge wEdge:weightedEdges){
+            if(wEdge!=null){
+                newWEdges.add(wEdge);
+            }
+        }
+        return  newWEdges;
     }
 
     public void addEdge(Edge e){
@@ -40,7 +46,13 @@ public class Graph {
     }
 
     public ArrayList<Edge> getEdges() {
-        return edges;
+        ArrayList<Edge>newEdges=new ArrayList<>();
+        for(Edge edge:edges){
+            if(edge!=null){
+                newEdges.add(edge);
+            }
+        }
+        return newEdges;
     }
 
     public boolean validEdge(Vertex v0, Vertex v1){
@@ -58,7 +70,13 @@ public class Graph {
     }
 
     public ArrayList<Vertex> getVertices(){
-        return vertices;
+        ArrayList<Vertex>newVertices=new ArrayList<>();
+        for(Vertex v:vertices){
+            if(v!=null){
+                newVertices.add(v);
+            }
+        }
+        return newVertices;
     }
 
     private void addEdgeAdjacencies(int pos1,int pos2){
@@ -123,6 +141,10 @@ public class Graph {
         }
 
         vertices.set(vertices.indexOf(vertex),null);
+    }
+
+    public int getNumberVertices(){
+        return vertices.size();
     }
 
 

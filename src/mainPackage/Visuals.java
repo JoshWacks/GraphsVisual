@@ -154,9 +154,6 @@ public class Visuals {
         }
 
         for (Vertex v : graph.getVertices()) {
-            if(v==null){
-                continue;
-            }
             tempX = v.getxPos();
             tempY = v.getyPos();
             if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
@@ -170,9 +167,6 @@ public class Visuals {
     private Vertex getSelectedVertex(double x, double y) {
         double tempX, tempY;
         for (Vertex v : graph.getVertices()) {
-            if(v==null){
-                continue;
-            }
             tempX = v.getxPos();
             tempY = v.getyPos();
             if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
@@ -446,9 +440,6 @@ public class Visuals {
         int y = 30;
         int x;
         for (Vertex v : graph.getVertices()) {
-            if(v==null){
-                continue;
-            }
             displayGC.fillText(v.getVertexNumber() + "", 20, y);
             displayGC.fillText("|", 49, y);
             x = 55;
@@ -473,31 +464,29 @@ public class Visuals {
     public static void showMatrix() {
 
         displayGC.setFill(Color.ANTIQUEWHITE);
-        displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());
-        int n = graph.getVertices().size();
-        boolean[][] adj_matrix = new boolean[n][n];
+        displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());//resets the display canvas
+        int n = graph.getNumberVertices();
+
+        boolean[][] adj_matrix = new boolean[n][n];//sets the adjacency matrix to how many vertices there are
 
         for (Vertex v : graph.getVertices()) {//makes the matrix based off the linked list we have
-            if(v==null){
-                continue;
-            }
             for (Vertex adj : v.getAdjacencies()) {
-                adj_matrix[v.getVertexNumber()][adj.getVertexNumber()] = true;
+                adj_matrix[v.getVertexNumber()][adj.getVertexNumber()] = true;//Sets all the adjacency's throughout the graph
 
             }
         }
 
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 18));
-        int count =0;
+        int count =-1;
         for (int i = 0; i < n; i++) {
             displayGC.setFill(Color.BLACK);
             Vertex temp=graph.getVertex(i);
-            if(temp==null) {
-                continue;
 
+            if(temp==null){
+                continue;
             }
-            count++;
+            count++;//Keeps track of the actual vertex we are on
             int num = temp.getVertexNumber();
             displayGC.fillText(num + "", 30 + (count * 25), 15);//horizontal number
             displayGC.fillText("|", 45 + (count * 25), 15);
@@ -505,12 +494,12 @@ public class Visuals {
             displayGC.fillText(num + "", 10, 40 + (count * 25));//vertical numbers
             displayGC.fillText("____", 0, 43 + (count * 25));
             displayGC.fillText("|", 22, 40 + (count * 25));
-            for (int j = 0; j < n; j++) {
+
+            //Adjustments for the vertical and horizontal headings
+            for (int j = 0; j < graph.getVertices().size(); j++) {//we only to fill in points of vertices that still exits
                 if (adj_matrix[i][j]) {
-                    displayGC.setFill(Color.BLUE);
-                    if (i == j) {
-                        displayGC.setFill(Color.GREEN);
-                    }
+                    displayGC.setFill(Color.BLUE);//blue when there is an edge
+
                     if (isWeightedEdge(i, j)[0] == 1) {//If it is a weighted edge we want to display the weight in the matrix
                         int incr = 0;
                         if (isWeightedEdge(i, j)[1] > 9 || isWeightedEdge(i, j)[1] < -9) {//more than 2 digits so we need to account for that spacing
@@ -523,10 +512,7 @@ public class Visuals {
 
                 } else {
 
-                    displayGC.setFill(Color.RED);
-                    if (i == j) {// A different colour for the diagonals
-                        displayGC.setFill(Color.GREEN);
-                    }
+                    displayGC.setFill(Color.RED);//Red colour when no edge
                     displayGC.fillText("F", 30 + (j * 25), 40 + (count * 25));
                 }
                 displayGC.setFill(Color.BLACK);
@@ -542,9 +528,6 @@ public class Visuals {
     private static int[] isWeightedEdge(int i, int j) {
         int[] results = new int[2];
         for (WeightedEdge e : graph.getWeightedEdges()) {
-            if(e==null){
-                continue;
-            }
             Vertex v1 = graph.getVertex(i);
             Vertex v2 = graph.getVertex(j);
             if (e.getVertexA().equals(v1) && e.getVertexB().equals(v2)) {
@@ -713,9 +696,6 @@ public class Visuals {
 
     private static void resetColors(){
         for(Vertex vertex:graph.getVertices()){
-            if(vertex==null){
-                continue;
-            }
             gc.setLineWidth(2.0D);
             gc.setFill(Color.BURLYWOOD);
             gc.fillOval(vertex.getxPos(),vertex.getyPos(),40,40);
@@ -755,9 +735,6 @@ public class Visuals {
         gc.fillRect(canvas.getLayoutX(), 0, canvasWidth, canvasHeight);
 
             for(Vertex v:graph.getVertices()){
-                if(v==null) {
-                    continue;
-                }
                     gc.setFill(Color.BURLYWOOD);
                     gc.setLineWidth(2.0D);
 
@@ -773,18 +750,18 @@ public class Visuals {
             }
 
         for(Edge e: graph.getEdges()) {
-            if(e != null) {
-                gc.setStroke(Color.BLACK);
-                gc.setLineWidth(3.0D);
-                gc.strokeLine(e.firstXY.getKey(), e.firstXY.getValue(), e.secondXY.getKey(), e.secondXY.getValue());
-            }
+
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(3.0D);
+            gc.strokeLine(e.firstXY.getKey(), e.firstXY.getValue(), e.secondXY.getKey(), e.secondXY.getValue());
+
 
         }
 
         for(WeightedEdge w:graph.getWeightedEdges()) {
-            if (w != null){
-                redrawWeightedEdge(w);
-             }
+
+            redrawWeightedEdge(w);
+
         }
 
 
@@ -843,18 +820,12 @@ public class Visuals {
 
     private static Edge getSelectedEdge(double x,double y){
         for(Edge edge:graph.getEdges()){
-            if(edge==null){
-                continue;
-            }
             if(edge.liesOnEdge(x,y)){
                 return edge;
             }
         }
 
         for (WeightedEdge weightedEdge:graph.getWeightedEdges()){
-            if(weightedEdge==null){
-                continue;
-            }
 
             if(weightedEdge.liesOnEdge(x,y)){
                 return weightedEdge;
@@ -867,9 +838,7 @@ public class Visuals {
 
     private static Vertex getSelectedVertx(double x,double y){
         for(Vertex v:graph.getVertices()){
-            if(v==null){
-                continue;
-            }
+
             if(v.liesInVertex(x,y)){
                 return v;
             }
