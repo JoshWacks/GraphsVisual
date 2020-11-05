@@ -43,12 +43,7 @@ public class Edge {
         double prod=x*getGradient();
         double sum=prod+getC();
         System.out.println("Y: "+ y+" Sum: "+sum+" M:" +getGradient()+" C:"+ getC());
-        if(sum-4<y && sum+4>y){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return sum - 7 < y && sum + 7 > y;
 
     }
 
@@ -63,7 +58,13 @@ public class Edge {
         return (firstXY.getValue()-(getGradient()*firstXY.getKey()));
     }
 
+    public boolean isWeightedEdge(){
+        return false;
+    }
 
+    public boolean containsVertex(Vertex v){
+        return v.equals(vertexA) || v.equals(vertexB);
+    }
 
     public String toSring(){
         return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" FirstXY: ("+firstXY.getKey()+";"+firstXY.getValue()+

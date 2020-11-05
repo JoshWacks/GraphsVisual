@@ -19,9 +19,17 @@ public class Vertex {
         xPos=x;
         yPos=y;
         colour=-1;//Sets the colour of that vertex to -1 representing uncoloured
+        xCentre=-1;
+        yCentre=-1;
     }
     public ArrayList<Vertex>getAdjacencies(){
         return adjacencies;
+    }
+
+    public void removeAdjacency(Vertex vertex){
+        if(adjacencies.contains(vertex)) {
+            adjacencies.remove(vertex);
+        }
     }
 
     public void addAdjacency(Vertex v){
@@ -66,6 +74,16 @@ public class Vertex {
 
     public void setyCentre(double yCentre) {
         this.yCentre = yCentre;
+    }
+
+    public boolean liesInVertex(double x, double y){
+        return xCentre - 20 < x && xCentre + x > x && yCentre - 20 < y && yCentre + 20 > y;//Tells us if the selected point is within the vertex
+    }
+
+    @Override
+    public String toString(){
+        return "Vertex number: "+vertexNumber+" xPos: "+xPos+" yPos: "+yPos+"\n"+
+                "xCentre: "+ xCentre+" yCentre: "+ yCentre+" Colour: "+colour;
     }
 
 }

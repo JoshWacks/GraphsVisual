@@ -11,9 +11,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-//TODO show circular edges
+//TODO add a button to delete arc edges
+//when re-drawing arc edges it re-draws incorrectly
 
-//TODO
 //convention for buttons
 //---->   1:add a vertex
 //---->   2:add an edge
@@ -36,30 +36,25 @@ public class Main extends Application {
         double width = screenBounds.getWidth();
         double height = screenBounds.getHeight() ;
 
-        Group group=new Group();
-        Canvas canvas=new Canvas(width*0.6,height*0.7);
+        Group group=new Group();//The main group which holds all the components
+        Canvas canvas=new Canvas(width*0.6,height*0.7);//the drawable canvas
         canvas.setLayoutX(0);
         canvas.setLayoutY(200);
         group.getChildren().add(canvas);
 
-        Canvas displayCanvas=new Canvas(600,400);
+        Canvas displayCanvas=new Canvas(600,400);//The canvas which is meant for display purposes only
         displayCanvas.setLayoutX(820);
         displayCanvas.setLayoutY(80);
         group.getChildren().add(displayCanvas);
 
 
         cs=new ConfigureScreen(group);
-        cs.addButtons();
-        //TODO check if I should make the visuals object here
-
-
+        cs.addButtons();//Adds all the buttons to the screen
 
         Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-10);
         scene.setFill(Color.BLACK);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
 
         visuals=new Visuals(canvas,displayCanvas);
     }

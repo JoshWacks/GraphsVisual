@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Graph {
 
     private ArrayList<Vertex>vertices=new ArrayList<>();
-    private static ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
-    private static ArrayList<Edge>edges=new ArrayList<>();
+    private ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
+    private ArrayList<Edge>edges=new ArrayList<>();
 
     public Graph(){
 
@@ -27,7 +27,7 @@ public class Graph {
         addEdgeAdjacencies(pos1,pos2);
     }
 
-    public static ArrayList<WeightedEdge> getWeightedEdges(){
+    public ArrayList<WeightedEdge> getWeightedEdges(){
         return weightedEdges;
     }
 
@@ -39,7 +39,7 @@ public class Graph {
 
     }
 
-    public static ArrayList<Edge> getEdges() {
+    public ArrayList<Edge> getEdges() {
         return edges;
     }
 
@@ -49,14 +49,7 @@ public class Graph {
                 return false;
             }
         }
-        for(WeightedEdge we:weightedEdges){
-            if(we.getVertexA().equals(v0) && we.getVertexB().equals(v1)){
-                return false;
-            }
-            else if(we.getVertexB().equals(v0) && we.getVertexB().equals(v1)){
-                return false;
-            }
-        }
+
         return true;
     }
 
@@ -102,11 +95,34 @@ public class Graph {
     }
 
     public void deleteEdge(Edge e){
-        edges.remove(e);
+        e.getVertexA().getAdjacencies().remove(e.vertexB);
+        e.getVertexB().getAdjacencies().remove(e.vertexA);
+        edges.set(edges.indexOf(e),null);
     }
 
-    public void deleteWeightedEdge(WeightedEdge weightedEdge){
-        weightedEdges.remove(weightedEdge);
+    public void deleteWeightedEdge(WeightedEdge w)
+    {
+        w.getVertexA().getAdjacencies().remove(w.vertexB);
+        w.getVertexB().getAdjacencies().remove(w.vertexA);
+        weightedEdges.set(weightedEdges.indexOf(w),null);
+    }
+
+    public void deleteVertex(Vertex vertex){
+        for(Vertex v:vertices){
+            v.removeAdjacency(vertex);
+        }
+        for(Edge e:edges){
+            if(e.containsVertex(vertex)){
+                deleteEdge(e);
+            }
+        }
+        for (WeightedEdge w:weightedEdges){
+            if(w.containsVertex(vertex)){
+                deleteWeightedEdge(w);
+            }
+        }
+
+        vertices.set(vertices.indexOf(vertex),null);
     }
 
 

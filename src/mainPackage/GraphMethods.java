@@ -57,7 +57,7 @@ public class GraphMethods {
             return false;
         }
 
-        if(Graph.getEdges().size()>0){
+        if(graph.getEdges().size()>0){
             JOptionPane.showMessageDialog(null,"All the edges must be weighted to create a MWSP");
             return false;
         }
@@ -76,7 +76,7 @@ public class GraphMethods {
         }
 
         ArrayList<Vertex>vertices=graph.getVertices();
-        ArrayList<WeightedEdge> weightedEdges =Graph.getWeightedEdges();
+        ArrayList<WeightedEdge> weightedEdges =graph.getWeightedEdges();
 
         ArrayList<Vertex>visited=new ArrayList<>();
 
@@ -93,27 +93,30 @@ public class GraphMethods {
              for(Vertex v:visited){
                  for(WeightedEdge e: weightedEdges){
                      if(e.getVertexA().equals(v)){
-                         if(e.getWeight()<cheapest && (!visited.contains(e.getVertexB()))){
+                         if(e.getWeight()<=cheapest && (!visited.contains(e.getVertexB()))){
                              cheapest=e.getWeight();
                              nextWeightedEdge =e;
                          }
                      }
-                     else if(e.getVertexB().equals(v)){
-                         if(e.getWeight()<cheapest && (!visited.contains(e.getVertexA()))){
+                     if(e.getVertexB().equals(v)){
+                         if(e.getWeight()<=cheapest && (!visited.contains(e.getVertexA()))){
                              cheapest=e.getWeight();
                              nextWeightedEdge =e;
                          }
                      }
                  }
              }
+
+
              usedWeightedEdges.add(nextWeightedEdge);
-             if(!visited.contains(nextWeightedEdge.getVertexA())){
+
+            if(nextWeightedEdge!=null && !visited.contains(nextWeightedEdge.getVertexA())){
                  visited.add(nextWeightedEdge.getVertexA());
              }
-             if(!visited.contains(nextWeightedEdge.getVertexB())){
+             if(nextWeightedEdge!=null && !visited.contains(nextWeightedEdge.getVertexB())){
                  visited.add(nextWeightedEdge.getVertexB());
              }
-             weightedEdges.remove(nextWeightedEdge);
+
              nextWeightedEdge =null;
         }
 

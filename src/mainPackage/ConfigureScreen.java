@@ -35,7 +35,7 @@ public class ConfigureScreen {
     }
 
     public void addButtons(){
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);//The two types of backgrounds used
         BackgroundFill backgroundFillDel=new BackgroundFill(Color.TOMATO,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         makeVertexBtn(background);
@@ -192,7 +192,7 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-                btnSelected=3;
+                btnSelected=4;
             }
         });
         buttons.add(deleteVertexBtn);
@@ -356,8 +356,6 @@ public class ConfigureScreen {
 
     }
 
-
-
     private void toggleBtnOn(Button button){
 
         BackgroundFill backgroundFill=new BackgroundFill(Color.LIME,new CornerRadii(3),null);
@@ -372,5 +370,5 @@ public class ConfigureScreen {
         Background background=new Background(backgroundFill);
         button.setBackground(background);
 
-    }
+    }//Visual Aspect so the user can see the button selected as on and to confirm it is off
 }

@@ -68,7 +68,10 @@ public class Visuals {
                 JOptionPane.showMessageDialog(null, "Please select an option from the draw menu first");
                 return;
             case 1:
-                drawVertix(x - 5, y - 5, gc);//we offset it by 5 to find the a more precise location of the pointer
+                drawVertex(x - 5, y - 5, gc);//we offset it by 5 to find the a more precise location of the pointer
+                return;
+            case 4:
+                deleteVertex(x,y);
                 return;
             case 5:
                 deleteEdge(x,y);
@@ -99,8 +102,13 @@ public class Visuals {
                         } else {
                             drawEdge(selectedVertices);
                         }
-                    } else if(ConfigureScreen.getBtnSelected() == 3) {//3 is a weighted edge
-                        drawWeightedEdge(selectedVertices);
+                    } else if(ConfigureScreen.getBtnSelected() == 3) {//3 is a weighted
+                        if (selectedVertices[0].equals(selectedVertices[1])) {
+                            drawWeightedArcEdge(selectedVertices[0]);
+                        } else {
+                            drawWeightedEdge(selectedVertices);
+                        }
+
                     }
                     numSelectedVertices = 0;
                 }
@@ -113,7 +121,7 @@ public class Visuals {
     }
 
 
-    private void drawVertix(double x, double y, GraphicsContext gc) {
+    private void drawVertex(double x, double y, GraphicsContext gc) {
 
         if (validVertexPos(x, y)) {
 
@@ -146,6 +154,9 @@ public class Visuals {
         }
 
         for (Vertex v : graph.getVertices()) {
+            if(v==null){
+                continue;
+            }
             tempX = v.getxPos();
             tempY = v.getyPos();
             if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
@@ -159,6 +170,9 @@ public class Visuals {
     private Vertex getSelectedVertex(double x, double y) {
         double tempX, tempY;
         for (Vertex v : graph.getVertices()) {
+            if(v==null){
+                continue;
+            }
             tempX = v.getxPos();
             tempY = v.getyPos();
             if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
@@ -221,7 +235,44 @@ public class Visuals {
         Edge edge=new Edge(vertex,vertex,pair1,pair2);
         graph.addEdge(edge);
     }
+    private void drawWeightedArcEdge(Vertex vertex) {
+        double cx = vertex.getxCentre();
+        double cy = vertex.getyCentre();
+        gc.setStroke(Color.BLACK);
+        gc.strokeArc(cx, cy + 2, 40, 35, 180, 270, ArcType.OPEN);
+        String temp = "";
+        while (weight == -1) {
+            temp = JOptionPane.showInputDialog("Please enter a weight for this edge");
 
+            if ((temp != null) && temp.length() > 0) {
+                weight = Integer.parseInt(temp);
+            } else {
+                weight = -1;
+                JOptionPane.showMessageDialog(null, "Please enter a valid number");
+            }
+
+        }
+
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(2.0D);
+        gc.fillRect(cx+15, cy+18, 25, 25);
+
+        gc.setFill(Color.WHITE);
+        int incr;
+        if (temp.length() == 1) {
+            incr = 3;
+        } else {
+            incr = 8;
+        }
+        gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 17));
+        gc.fillText(weight + "", cx+25 - incr, cy+28 + 7);
+
+        Pair<Double,Double> pair1=new Pair<>(vertex.getxPos(),vertex.getyPos());
+
+        WeightedEdge weightedEdge=new WeightedEdge(vertex,vertex,weight,pair1,pair1);
+        graph.addWeightedEdge(weightedEdge);
+        weight = -1;
+    }
 
     private void drawWeightedEdge(Vertex[] arr) {
 
@@ -264,12 +315,13 @@ public class Visuals {
         } else {
             weightedEdge = new WeightedEdge(v1, v0, weight,pair1,pair2);
         }
-
+        double[] midpoint = getMidpoint(v0, v1);
+        weightedEdge.setMidPoint(midpoint);
         graph.addWeightedEdge(weightedEdge);
         gc.setLineWidth(3.0D);
         gc.strokeLine(points[0], points[1], points[2], points[3]);
 
-        double[] midpoint = getMidpoint(v0, v1);
+
         gc.setFill(Color.BLACK);
         gc.setLineWidth(2.0D);
         gc.fillRect(midpoint[0] - 15, midpoint[1] - 15, 35, 35);
@@ -394,6 +446,9 @@ public class Visuals {
         int y = 30;
         int x;
         for (Vertex v : graph.getVertices()) {
+            if(v==null){
+                continue;
+            }
             displayGC.fillText(v.getVertexNumber() + "", 20, y);
             displayGC.fillText("|", 49, y);
             x = 55;
@@ -417,13 +472,15 @@ public class Visuals {
 
     public static void showMatrix() {
 
-        //TODO check if it is better to make the matrix each time or just keep a matrix in the graph class
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());
         int n = graph.getVertices().size();
         boolean[][] adj_matrix = new boolean[n][n];
 
         for (Vertex v : graph.getVertices()) {//makes the matrix based off the linked list we have
+            if(v==null){
+                continue;
+            }
             for (Vertex adj : v.getAdjacencies()) {
                 adj_matrix[v.getVertexNumber()][adj.getVertexNumber()] = true;
 
@@ -432,41 +489,49 @@ public class Visuals {
 
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 18));
+        int count =0;
         for (int i = 0; i < n; i++) {
             displayGC.setFill(Color.BLACK);
-            displayGC.fillText(i + "", 30 + (i * 25), 15);//horizontal number
-            displayGC.fillText("|", 45 + (i * 25), 15);
+            Vertex temp=graph.getVertex(i);
+            if(temp==null) {
+                continue;
 
-            displayGC.fillText(i + "", 10, 40 + (i * 25));//vertical numbers
-            displayGC.fillText("____", 0, 43 + (i * 25));
-            displayGC.fillText("|", 22, 40 + (i * 25));
+            }
+            count++;
+            int num = temp.getVertexNumber();
+            displayGC.fillText(num + "", 30 + (count * 25), 15);//horizontal number
+            displayGC.fillText("|", 45 + (count * 25), 15);
+
+            displayGC.fillText(num + "", 10, 40 + (count * 25));//vertical numbers
+            displayGC.fillText("____", 0, 43 + (count * 25));
+            displayGC.fillText("|", 22, 40 + (count * 25));
             for (int j = 0; j < n; j++) {
                 if (adj_matrix[i][j]) {
                     displayGC.setFill(Color.BLUE);
                     if (i == j) {
                         displayGC.setFill(Color.GREEN);
                     }
-                    if (isWeightedEdge(i, j)[0] == 1) {
+                    if (isWeightedEdge(i, j)[0] == 1) {//If it is a weighted edge we want to display the weight in the matrix
                         int incr = 0;
                         if (isWeightedEdge(i, j)[1] > 9 || isWeightedEdge(i, j)[1] < -9) {//more than 2 digits so we need to account for that spacing
                             incr = -3;
                         }
-                        displayGC.fillText(isWeightedEdge(i, j)[1] + "", 30 + (j * 25) + incr, 40 + (i * 25));
+                        displayGC.fillText(isWeightedEdge(i, j)[1] + "", 30 + (j * 25) + incr, 40 + (count * 25));
                     } else {
-                        displayGC.fillText("T", 30 + (j * 25), 40 + (i * 25));
+                        displayGC.fillText("T", 30 + (j * 25), 40 + (count * 25));
                     }
 
                 } else {
 
                     displayGC.setFill(Color.RED);
-                    if (i == j) {
+                    if (i == j) {// A different colour for the diagonals
                         displayGC.setFill(Color.GREEN);
                     }
-                    displayGC.fillText("F", 30 + (j * 25), 40 + (i * 25));
+                    displayGC.fillText("F", 30 + (j * 25), 40 + (count * 25));
                 }
                 displayGC.setFill(Color.BLACK);
-                displayGC.fillText("|", 45 + (j * 25), 40 + (i * 25));
-                displayGC.fillText("_____", j * 27, 43 + (i * 25));
+                displayGC.fillText("|", 45 + (j * 25), 40 + (count * 25));
+                displayGC.fillText("_____", j * 27, 43 + (count * 25));
 
 
             }
@@ -476,7 +541,10 @@ public class Visuals {
 
     private static int[] isWeightedEdge(int i, int j) {
         int[] results = new int[2];
-        for (WeightedEdge e : Graph.getWeightedEdges()) {
+        for (WeightedEdge e : graph.getWeightedEdges()) {
+            if(e==null){
+                continue;
+            }
             Vertex v1 = graph.getVertex(i);
             Vertex v2 = graph.getVertex(j);
             if (e.getVertexA().equals(v1) && e.getVertexB().equals(v2)) {
@@ -605,7 +673,7 @@ public class Visuals {
     public static void colourGraph(){
         resetColors();
         ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
-        ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();;
+        ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         Runnable colour=() ->{
 
             for (int i = 0; i < pairs.size(); i++) {
@@ -645,6 +713,9 @@ public class Visuals {
 
     private static void resetColors(){
         for(Vertex vertex:graph.getVertices()){
+            if(vertex==null){
+                continue;
+            }
             gc.setLineWidth(2.0D);
             gc.setFill(Color.BURLYWOOD);
             gc.fillOval(vertex.getxPos(),vertex.getyPos(),40,40);
@@ -678,53 +749,152 @@ public class Visuals {
         }
     }
 
+    private static void repaint(){
+        gc.setFill(Color.WHITE);
+        gc.setLineWidth(4.0D);
+        gc.fillRect(canvas.getLayoutX(), 0, canvasWidth, canvasHeight);
+
+            for(Vertex v:graph.getVertices()){
+                if(v==null) {
+                    continue;
+                }
+                    gc.setFill(Color.BURLYWOOD);
+                    gc.setLineWidth(2.0D);
+
+                    gc.fillOval(v.getxPos(), v.getyPos(), 40, 40);
+                    gc.setFill(Color.BLACK);
+                    gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+                    if ((v.getVertexNumber() + "").length() == 1) {
+                        gc.fillText(v.getVertexNumber() + "", v.getxPos() + 15, v.getyPos() + 25);
+                    } else {
+                        gc.fillText(v.getVertexNumber() + "", v.getxPos() + 10, v.getyPos() + 25);
+                    }
+
+            }
+
+        for(Edge e: graph.getEdges()) {
+            if(e != null) {
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(3.0D);
+                gc.strokeLine(e.firstXY.getKey(), e.firstXY.getValue(), e.secondXY.getKey(), e.secondXY.getValue());
+            }
+
+        }
+
+        for(WeightedEdge w:graph.getWeightedEdges()) {
+            if (w != null){
+                redrawWeightedEdge(w);
+             }
+        }
+
+
+
+    }
+
+    private static void redrawWeightedEdge(WeightedEdge weightedEdge){
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3.0D);
+        gc.strokeLine(weightedEdge.firstXY.getKey(), weightedEdge.firstXY.getValue(), weightedEdge.secondXY.getKey(), weightedEdge.secondXY.getValue());
+
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(2.0D);
+        gc.fillRect(weightedEdge.getMidPoint()[0] - 15, weightedEdge.getMidPoint()[1] - 15, 35, 35);
+
+        gc.setFill(Color.WHITE);
+        int incr;
+        String temp=weightedEdge.getWeight()+"";
+        if (temp.length() == 1) {
+            incr = 3;
+        } else {
+            incr = 8;
+        }
+        gc.fillText(weightedEdge.getWeight() + "", weightedEdge.getMidPoint()[0] - incr, weightedEdge.getMidPoint()[1] + 7);
+
+
+    }
+
     private static void deleteEdge(double x,double y){
         if(getSelectedEdge(x,y).vertexA.getVertexNumber()==-1){
             JOptionPane.showMessageDialog(null,"Please make sure to select an edge");
             return;
         }
+        if(!getSelectedEdge(x,y).isWeightedEdge()){
+            Edge selectedEdge=getSelectedEdge(x,y);
+            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexNumber()+" and "+ selectedEdge.vertexB.getVertexNumber()+
+                    "\nPress yes to delete this edge");
 
-        System.out.println(getSelectedEdge(x,y).toSring());
+            if(option==JOptionPane.YES_OPTION){
+              graph.deleteEdge(selectedEdge);
+                repaint();
+            }
+        }else{
+            WeightedEdge selectedEdge= (WeightedEdge) getSelectedEdge(x,y);
+            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexNumber()+" and "+ selectedEdge.vertexB.getVertexNumber()+
+                    "\nPress yes to delete this edge");
+
+            if(option==JOptionPane.YES_OPTION){
+                graph.deleteWeightedEdge(selectedEdge);
+                repaint();
+            }
+        }
+
 
     }
 
     private static Edge getSelectedEdge(double x,double y){
-        for(Edge edge:Graph.getEdges()){
+        for(Edge edge:graph.getEdges()){
+            if(edge==null){
+                continue;
+            }
             if(edge.liesOnEdge(x,y)){
                 return edge;
             }
-//            for(int i=0;i<5;i++){
-//                if(edge.liesOnEdge(x+i,y)){
-//                    return edge;
-//                }
-//                if(edge.liesOnEdge(x,y+i)){
-//                    return edge;
-//                }
-//                if(edge.liesOnEdge(x-i,y)){
-//                    return edge;
-//                }
-//                if(edge.liesOnEdge(x,y-i)){
-//                    return edge;
-//                }
-//                if(edge.liesOnEdge(x+i,y+i)){
-//                    return edge;
-//                }
-//                if(edge.liesOnEdge(x-i,y)){
-//                    return edge;
-//                }
-//            }
-
         }
 
-        for (WeightedEdge weightedEdge:Graph.getWeightedEdges()){
+        for (WeightedEdge weightedEdge:graph.getWeightedEdges()){
+            if(weightedEdge==null){
+                continue;
+            }
+
             if(weightedEdge.liesOnEdge(x,y)){
                 return weightedEdge;
             }
         }
         Vertex vertex=new Vertex(-1,-1,-1);
 
-        Edge edge=new Edge(vertex,vertex);
-        return edge;
+        return new Edge(vertex,vertex);
+    }
+
+    private static Vertex getSelectedVertx(double x,double y){
+        for(Vertex v:graph.getVertices()){
+            if(v==null){
+                continue;
+            }
+            if(v.liesInVertex(x,y)){
+                return v;
+            }
+        }
+
+        return new Vertex(-1,-1,-1);
+    }
+
+    private static void deleteVertex(double x, double y){
+        Vertex vertex=getSelectedVertx(x,y);
+        if(vertex.getxPos()==-1){
+            JOptionPane.showMessageDialog(null,"Please select a vertex");
+            return;
+        }
+        int option=JOptionPane.showConfirmDialog(null,"You have selected Vertex "+ vertex.getVertexNumber()+
+                        "\nYou will delete all the edges connected to this Vertex"+
+                "\nPress yes to delete this Vertex");
+
+        if(option==JOptionPane.YES_OPTION){
+            graph.deleteVertex(vertex);
+            repaint();
+        }
+
+
+
     }
 
 }
