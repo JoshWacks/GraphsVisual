@@ -25,6 +25,8 @@ public class ConfigureScreen {
     private static Button colourGraphBtn;
     private static Button deleteEdgeBtn;
     private static Button deleteVertexBtn;
+    private static Button setRootBtn;
+    private static Button dfsBtn;
 
     private static ArrayList<Button>buttons=new ArrayList<>();
 
@@ -49,6 +51,8 @@ public class ConfigureScreen {
         makeColourBtn();
         makeDeleteEdgeBtn(new Background(backgroundFillDel));
         makeDeleteVertexBtn(new Background(backgroundFillDel));
+        makeRootBtn();
+        makeDFSBtn();
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
@@ -61,6 +65,8 @@ public class ConfigureScreen {
         group.getChildren().add(colourGraphBtn);
         group.getChildren().add(deleteEdgeBtn);
         group.getChildren().add(deleteVertexBtn);
+        group.getChildren().add(setRootBtn);
+        group.getChildren().add(dfsBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -96,6 +102,7 @@ public class ConfigureScreen {
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.GOLD);
                 btnSelected=1;
             }
         });
@@ -128,6 +135,7 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.GOLD);
                 btnSelected=2;
             }
         });
@@ -160,10 +168,47 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.GOLD);
                 btnSelected=3;
             }
         });
         buttons.add(addWeightedEdgeBtn);
+    }
+
+    private void makeRootBtn(){
+        setRootBtn=new Button("Indicate Root");
+        setRootBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);//The two types of backgrounds used
+        Background background=new Background(backgroundFill);
+        setRootBtn.setBackground(background);
+
+        setRootBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To indicate the root click here then on the vertex you would like to be the root");
+        Tooltip.install(null, t);
+        setRootBtn.setTooltip(t);
+
+        setRootBtn.setLayoutX(5);
+        setRootBtn.setLayoutY(90);
+        setRootBtn.setPrefWidth(200);
+        setRootBtn.setPrefHeight(40);
+
+        setRootBtn.setOnMouseClicked(event -> {
+            if(btnSelected==6){
+                btnSelected=0;
+                toggleBtnOff(setRootBtn,Color.GOLD);
+            }
+            else{
+                toggleBtnOn(setRootBtn);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+
+                btnSelected=6;
+            }
+        });
+        buttons.add(setRootBtn);
     }
 
     private void makeDeleteVertexBtn(Background background){
@@ -192,6 +237,7 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.GOLD);
                 btnSelected=4;
             }
         });
@@ -225,6 +271,7 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.GOLD);
                 btnSelected=5;
             }
         });
@@ -291,6 +338,7 @@ public class ConfigureScreen {
         checkCompleteBtn.setPrefHeight(5);
 
         checkCompleteBtn.setOnMouseClicked(event -> Visuals.checkCompleted());
+
     }
 
     private void makeConnectedBtn(){
@@ -355,6 +403,29 @@ public class ConfigureScreen {
         colourGraphBtn.setOnMouseClicked(event -> Visuals.colourGraph());
 
     }
+
+    private void makeDFSBtn(){
+        dfsBtn=new Button("Perform DFS");
+        dfsBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKSALMON,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
+        dfsBtn.setBackground(background);
+
+        dfsBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here perform a dfs on on the current graph from the root");
+        Tooltip.install(null, t);
+        dfsBtn.setTooltip(t);
+
+        dfsBtn.setLayoutX(985);
+        dfsBtn.setLayoutY(600);
+        dfsBtn.setPrefWidth(370);
+        dfsBtn.setPrefHeight(5);
+
+        dfsBtn.setOnMouseClicked(event -> Visuals.callDFS());
+
+    }
+
+
 
     private void toggleBtnOn(Button button){
 

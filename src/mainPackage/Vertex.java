@@ -11,6 +11,7 @@ public class Vertex {
     private double yPos;
     private double xCentre;
     private double yCentre;
+    private boolean isRoot;
 
 
 
@@ -21,6 +22,7 @@ public class Vertex {
         colour=-1;//Sets the colour of that vertex to -1 representing uncoloured
         xCentre=-1;
         yCentre=-1;
+        isRoot=false;
     }
     public ArrayList<Vertex>getAdjacencies(){
         ArrayList<Vertex>newAdj =new ArrayList<>();
@@ -80,9 +82,19 @@ public class Vertex {
         this.yCentre = yCentre;
     }
 
+    public boolean isRoot() {
+        return isRoot;
+    }
+
+    public void setRoot(boolean root) {
+        isRoot = root;
+    }
+
     public boolean liesInVertex(double x, double y){
         return xCentre - 20 < x && xCentre + x > x && yCentre - 20 < y && yCentre + 20 > y;//Tells us if the selected point is within the vertex
     }
+
+
 
     @Override
     public String toString(){

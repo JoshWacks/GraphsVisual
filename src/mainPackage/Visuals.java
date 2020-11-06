@@ -19,25 +19,28 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Visuals {
-    private static Canvas canvas;
-    private static double canvasWidth;
-    private static double canvasHeight;
+    protected static Canvas canvas;
+    protected static double canvasWidth;
+    protected static double canvasHeight;
 
-    private static int vertexCount = 0;
-    private static GraphicsContext gc;
-    private static final Graph graph = new Graph();
+    protected static int vertexCount = 0;
+    protected static GraphicsContext gc;
+    protected static final Graph graph = new Graph();
 
-    private int numSelectedVertices = 0;
-    private final Vertex[] selectedVertices = new Vertex[2];
+    protected int numSelectedVertices = 0;
+    protected final Vertex[] selectedVertices = new Vertex[2];
 
 
-    private static Canvas displayCanvas;
-    private static GraphicsContext displayGC;
+    protected static Canvas displayCanvas;
+    protected static GraphicsContext displayGC;
 
-    private static GraphMethods graphMethods;
+    protected static GraphMethods graphMethods;
 
     private int weight = -1;
 
+    public Visuals(){
+
+    }
 
     public Visuals(Canvas c, Canvas dc) {
         canvas = c;
@@ -76,6 +79,10 @@ public class Visuals {
             case 5:
                 deleteEdge(x,y);
                 return;
+            case 6:
+                selectRoot(x,y);
+                return;
+
         }
         if (ConfigureScreen.getBtnSelected() == 2 || ConfigureScreen.getBtnSelected() == 3) {
             if (getSelectedVertex(x - 5, y - 5).getVertexNumber() != -1) {
@@ -119,8 +126,7 @@ public class Visuals {
         }
 
     }
-
-
+    //Draws a vertex at a required x and y position
     private void drawVertex(double x, double y, GraphicsContext gc) {
 
         if (validVertexPos(x, y)) {
@@ -147,6 +153,7 @@ public class Visuals {
         }
     }
 
+    //Ensures the selected vertex is in the correct position
     private boolean validVertexPos(double x, double y) {
         Double tempX, tempY;
         if ((y + 40) > canvasHeight || (x - 40) < 0 || (x + 40) > canvasWidth || (y - 40) < 0) {//basic bounds checking
@@ -164,6 +171,7 @@ public class Visuals {
         return true;
     }
 
+    //Returns a Vertex at a specific x y position
     private Vertex getSelectedVertex(double x, double y) {
         double tempX, tempY;
         for (Vertex v : graph.getVertices()) {
@@ -178,15 +186,47 @@ public class Visuals {
 
     }
 
+    //Highlights a specific vertex on the board
     private void highlightVertex(Vertex v) {
+        if(v.isRoot()){
+            return;
+        }
         gc.setStroke(Color.LIME);
         gc.setLineWidth(4.0D);
         gc.strokeOval(v.getxPos(), v.getyPos(), 40, 40);
     }
 
+    //Unhighlight a specific vertex on the board
     private void unhighlightVertex(Vertex v) {
+        if(v.isRoot()){
+            return;
+        }
         gc.setStroke(Color.WHITE);
+
         gc.strokeOval(v.getxPos(), v.getyPos(), 40, 40);
+        gc.strokeOval(v.getxPos(), v.getyPos(), 41, 41);
+    }
+
+    //Allows the user to select which root they would like to be the vertex
+    private void selectRoot(double x,double y){
+        Vertex v=graph.getRoot();
+        if(v!=null){
+            v.setRoot(false);
+            unhighlightVertex(v);
+        }
+        Vertex vertex=getSelectedVertex(x,y);
+
+        if(vertex.getxPos()==-1){
+            JOptionPane.showMessageDialog(null,"Please select a valid vertex");
+            return;
+        }
+
+        vertex.setRoot(true);
+        graph.setRoot(vertex);
+
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(4.0D);
+        gc.strokeOval(vertex.getxPos(), vertex.getyPos(),40, 40);
     }
 
     private void drawEdge(Vertex[] arr) {
@@ -229,6 +269,7 @@ public class Visuals {
         Edge edge=new Edge(vertex,vertex,pair1,pair2);
         graph.addEdge(edge);
     }
+
     private void drawWeightedArcEdge(Vertex vertex) {
         double cx = vertex.getxCentre();
         double cy = vertex.getyCentre();
@@ -688,13 +729,13 @@ public class Visuals {
 
 
             Platform.runLater(() -> {//Method of running on the UI thread
-                executorService.scheduleAtFixedRate(colour, 10, 1700, TimeUnit.MILLISECONDS);//every 1500 milliseconds these methods are run
+                executorService.scheduleAtFixedRate(colour, 10, 1700, TimeUnit.MILLISECONDS);//every 1700 milliseconds these methods are run
 
             });
 
     }
 
-    private static void resetColors(){
+    protected static void resetColors(){
         for(Vertex vertex:graph.getVertices()){
             gc.setLineWidth(2.0D);
             gc.setFill(Color.BURLYWOOD);
@@ -864,6 +905,11 @@ public class Visuals {
 
 
 
+    }
+
+    public static void callDFS(){
+        SearchVisual searchVisual=new SearchVisual();
+        searchVisual.DFS();
     }
 
 }

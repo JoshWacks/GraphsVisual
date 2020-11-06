@@ -4,12 +4,15 @@ import javafx.util.Pair;
 import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GraphMethods {
     private static Graph graph;
     private static boolean[] visited;
+    private static ArrayList<Vertex> visitedDFS;
+    private static ArrayList<Edge>usedEdges;
 
     public GraphMethods(Graph g) {
         graph = g;
@@ -161,5 +164,70 @@ public class GraphMethods {
 
         }
         return pairs;
+    }
+
+    public ArrayList<Vertex> callDFS(){
+        visitedDFS=new ArrayList<>();
+        usedEdges=new ArrayList<>();//resets all the arrays
+
+        Vertex root=graph.getRoot();
+        dfs(root);
+        return visitedDFS;
+    }
+
+    private void dfs(Vertex currentVertex){
+        visitedDFS.add(currentVertex);
+        Vertex nextVertex;
+        while (unvisitedAdjacency(currentVertex).getxPos()!=-1){//It has an unvisited adjacency and there is an edge to it
+
+            nextVertex=unvisitedAdjacency(currentVertex);
+            usedEdges.add(getEdge(currentVertex,nextVertex));
+            System.out.println(getEdge(currentVertex,nextVertex).toSring());
+            dfs(nextVertex);
+        }
+
+
+        
+    }
+
+    private boolean isEdge(Vertex v,Vertex w){//Checks if there is an edge between two adjacent vertexes
+        for(WeightedEdge weightedEdge:graph.getWeightedEdges()){
+            if(weightedEdge.containsVertex(v) && weightedEdge.containsVertex(w)){
+                return  true;
+            }
+        }
+
+        for(Edge edge:graph.getEdges()){
+            if(edge.containsVertex(v) && edge.containsVertex(w)){
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    private Vertex unvisitedAdjacency(Vertex vertex){
+        for(Vertex adj:vertex.getAdjacencies()){
+            if(!visitedDFS.contains(adj)){//If there is an unvisited adjacency at that current vertex
+               if(isEdge(vertex,adj)){//And there is a path to that unvisited vertex
+                   return adj;
+               }
+            }
+        }
+        return new Vertex(-1,-1,-1);//A vertex to indicate no adj vertex
+    }
+
+    private Edge getEdge(Vertex v,Vertex w){
+        for(WeightedEdge weightedEdge:graph.getWeightedEdges()){
+            if(weightedEdge.containsVertex(v) && weightedEdge.containsVertex(w)){
+                return  weightedEdge;
+            }
+        }
+
+        for(Edge edge:graph.getEdges()){
+            if(edge.containsVertex(v) && edge.containsVertex(w)){
+                return edge;
+            }
+        }
+        return new Edge(new Vertex(-1,-1,-1),new Vertex(-1,-1,-1));
     }
 }

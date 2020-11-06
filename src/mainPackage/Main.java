@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 //---->   3:add a weighted edge
 //---->   4:Delete a vertex
 //---->   5:Delete an edge
+//---->   6:Indicate root
+
+
 
 
 public class Main extends Application {

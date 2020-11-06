@@ -9,9 +9,10 @@ public class Graph {
     private ArrayList<Vertex>vertices=new ArrayList<>();
     private ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
     private ArrayList<Edge>edges=new ArrayList<>();
+    private Vertex root;
 
     public Graph(){
-
+        root=null;
     }
 
     public void addVertex(Vertex v){
@@ -145,6 +146,14 @@ public class Graph {
 
     public int getNumberVertices(){
         return vertices.size();
+    }
+
+    public void setRoot(Vertex v){
+        root=v;
+    }
+
+    public Vertex getRoot(){
+        return root;
     }
 
 
