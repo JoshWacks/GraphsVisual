@@ -12,29 +12,41 @@ import java.util.concurrent.TimeUnit;
 
 public class SearchVisual extends Visuals {
 
-    protected void DFS(){
+    protected void search(String search){
         if(graph.getRoot()==null){
             JOptionPane.showMessageDialog(null,"Please select a root first");
             return;
         }
-       ArrayList<Vertex> visitedOrder=graphMethods.callDFS();
+        ArrayList<Vertex> visitedOrder;
+        switch (search){
+            case "DFS":
+                visitedOrder=graphMethods.callDFS();
+                break;
+            case "BFS":
+                visitedOrder=graphMethods.callBFS();
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + search);
+        }
+
 
        displayGC.setFill(Color.ANTIQUEWHITE);
        displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());//resets the display canvas
 
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 23));
-        displayGC.fillText("Below Is The DFS Traversal Of The Graph",30,30 );
+        displayGC.fillText("Below Is The "+search+" Traversal Of The Graph",35,30 );
         int count=0;
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 18));
         for(Vertex vertex:visitedOrder){
-            displayGC.fillText(vertex.getVertexNumber()+"",10,70+(count*20) );//Increments goes down the page
+            displayGC.fillText("-----     "+vertex.getVertexNumber(),10,70+(count*20) );//Increments goes down the page
             count++;
         }
-        showDFS(visitedOrder);
+        showSearch(visitedOrder);
     }
 
-    private void showDFS( ArrayList<Vertex> visitedOrder){
+    private void showSearch( ArrayList<Vertex> visitedOrder){
 
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         final int[] pos = {0};//keeps track of where we are in the arrayList
@@ -49,7 +61,7 @@ public class SearchVisual extends Visuals {
             }
             Vertex vertex=visitedOrder.get(pos[0]);
             gc.setLineWidth(2.0D);
-            gc.setFill(Color.FORESTGREEN);
+            gc.setFill(Color.SPRINGGREEN);
             gc.fillOval(vertex.getxPos(),vertex.getyPos(),40,40);
 
             gc.setFill(Color.BLACK);

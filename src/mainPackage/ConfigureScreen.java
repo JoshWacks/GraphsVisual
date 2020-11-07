@@ -2,6 +2,7 @@ package mainPackage;
 
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -18,15 +19,19 @@ public class ConfigureScreen {
     private static Group group;
     private static Button viewListBtn;
     private static Button viewMatrixBtn;
-    private static Button checkCompleteBtn;
-    private static Button checkConnectedBtn;
+
     private static Button addWeightedEdgeBtn;
-    private static Button getMWSPBtn;
-    private static Button colourGraphBtn;
+
+
     private static Button deleteEdgeBtn;
     private static Button deleteVertexBtn;
     private static Button setRootBtn;
-    private static Button dfsBtn;
+
+    private static ComboBox algorithmComboBox;
+    private static Button runAlgorithmBtn;
+
+    private static ComboBox  searchComboBox;
+    private static Button searchBtn;
 
     private static ArrayList<Button>buttons=new ArrayList<>();
 
@@ -45,28 +50,33 @@ public class ConfigureScreen {
         makeWeightedEdgeBtn(background);
         makeViewListBtn();
         makeViewMatrixBtn();
-        makeCompleteBtn();
-        makeConnectedBtn();
-        makeMWSPBtn();
-        makeColourBtn();
+
         makeDeleteEdgeBtn(new Background(backgroundFillDel));
         makeDeleteVertexBtn(new Background(backgroundFillDel));
         makeRootBtn();
-        makeDFSBtn();
+
+        makeAlgBtn();
+        makeAlgorithmBox();
+
+        makeCombBox();
+        makeSearchBtn();
 
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
         group.getChildren().add(viewListBtn);
         group.getChildren().add(viewMatrixBtn);
-        group.getChildren().add(checkCompleteBtn);
-        group.getChildren().add(checkConnectedBtn);
+
         group.getChildren().add(addWeightedEdgeBtn);
-        group.getChildren().add(getMWSPBtn);
-        group.getChildren().add(colourGraphBtn);
+
         group.getChildren().add(deleteEdgeBtn);
         group.getChildren().add(deleteVertexBtn);
         group.getChildren().add(setRootBtn);
-        group.getChildren().add(dfsBtn);
+
+        group.getChildren().add(algorithmComboBox);
+        group.getChildren().add(runAlgorithmBtn);
+
+        group.getChildren().add(searchBtn);
+        group.getChildren().add(searchComboBox);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -320,108 +330,137 @@ public class ConfigureScreen {
         buttons.add(viewMatrixBtn);
     }
 
-    private void makeCompleteBtn(){
-        checkCompleteBtn=new Button("Complete?");
-        checkCompleteBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.CORAL,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
-        checkCompleteBtn.setBackground(background);
+//    private void makeCompleteBtn(){
+//        checkCompleteBtn=new Button("Complete?");
+//        checkCompleteBtn.setTextFill(Color.BLACK);
+//        BackgroundFill backgroundFill=new BackgroundFill(Color.CORAL,new CornerRadii(3),null);
+//        Background background=new Background(backgroundFill);
+//        checkCompleteBtn.setBackground(background);
+//
+//        checkCompleteBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+//        Tooltip t = new Tooltip("Click here to check if the graph is a complete graph");
+//        Tooltip.install(null, t);
+//        checkCompleteBtn.setTooltip(t);
+//
+//        checkCompleteBtn.setLayoutX(825);
+//        checkCompleteBtn.setLayoutY(500);
+//        checkCompleteBtn.setPrefSize(130,30);
+//
+//        checkCompleteBtn.setOnMouseClicked(event -> Visuals.checkCompleted());
+//
+//    }
 
-        checkCompleteBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-        Tooltip t = new Tooltip("Click here to check if the graph is a complete graph");
-        Tooltip.install(null, t);
-        checkCompleteBtn.setTooltip(t);
+//    private void makeConnectedBtn(){
+//        checkConnectedBtn=new Button("Connected?");
+//        checkConnectedBtn.setTextFill(Color.BLACK);
+//        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKKHAKI,new CornerRadii(3),null);
+//        Background background=new Background(backgroundFill);
+//        checkConnectedBtn.setBackground(background);
+//
+//        checkConnectedBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+//        Tooltip t = new Tooltip("Click here to check if the graph is a connected graph");
+//        Tooltip.install(null, t);
+//        checkConnectedBtn.setTooltip(t);
+//
+//        checkConnectedBtn.setLayoutX(825);
+//        checkConnectedBtn.setLayoutY(550);
+//        checkConnectedBtn.setPrefSize(130,30);
+//
+//        checkConnectedBtn.setOnMouseClicked(event -> Visuals.checkConnected());
+//
+//    }
+//
+//    private void makeMWSPBtn(){
+//        getMWSPBtn=new Button("Get Minimum Weighted Spanning Tree");
+//        getMWSPBtn.setTextFill(Color.BLACK);
+//        BackgroundFill backgroundFill=new BackgroundFill(Color.DODGERBLUE,new CornerRadii(3),null);
+//        Background background=new Background(backgroundFill);
+//        getMWSPBtn.setBackground(background);
+//
+//        getMWSPBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+//        Tooltip t = new Tooltip("Click here to make the minimum weighted spanning tree of this graph if possible");
+//        Tooltip.install(null, t);
+//        getMWSPBtn.setTooltip(t);
+//
+//        getMWSPBtn.setLayoutX(985);
+//        getMWSPBtn.setLayoutY(500);
+//        getMWSPBtn.setPrefSize(370,30);
+//
+//        getMWSPBtn.setOnMouseClicked(event -> Visuals.makeMWST());
+//
+//    }
 
-        checkCompleteBtn.setLayoutX(825);
-        checkCompleteBtn.setLayoutY(500);
-        checkCompleteBtn.setPrefWidth(130);
-        checkCompleteBtn.setPrefHeight(5);
-
-        checkCompleteBtn.setOnMouseClicked(event -> Visuals.checkCompleted());
-
-    }
-
-    private void makeConnectedBtn(){
-        checkConnectedBtn=new Button("Connected?");
-        checkConnectedBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKKHAKI,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
-        checkConnectedBtn.setBackground(background);
-
-        checkConnectedBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-        Tooltip t = new Tooltip("Click here to check if the graph is a connected graph");
-        Tooltip.install(null, t);
-        checkConnectedBtn.setTooltip(t);
-
-        checkConnectedBtn.setLayoutX(825);
-        checkConnectedBtn.setLayoutY(550);
-        checkConnectedBtn.setPrefWidth(130);
-        checkConnectedBtn.setPrefHeight(5);
-
-        checkConnectedBtn.setOnMouseClicked(event -> Visuals.checkConnected());
-
-    }
-
-    private void makeMWSPBtn(){
-        getMWSPBtn=new Button("Get Minimum Weighted Spanning Tree");
-        getMWSPBtn.setTextFill(Color.BLACK);
+    private void makeAlgBtn(){
+        runAlgorithmBtn=new Button("Run Algorithm");
+        runAlgorithmBtn.setTextFill(Color.BLACK);
         BackgroundFill backgroundFill=new BackgroundFill(Color.DODGERBLUE,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
-        getMWSPBtn.setBackground(background);
+        runAlgorithmBtn.setBackground(background);
 
-        getMWSPBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-        Tooltip t = new Tooltip("Click here to make the minimum weighted spanning tree of this graph if possible");
+        runAlgorithmBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here to run the selected algorithm");
         Tooltip.install(null, t);
-        getMWSPBtn.setTooltip(t);
+        runAlgorithmBtn.setTooltip(t);
 
-        getMWSPBtn.setLayoutX(985);
-        getMWSPBtn.setLayoutY(500);
-        getMWSPBtn.setPrefWidth(370);
-        getMWSPBtn.setPrefHeight(5);
 
-        getMWSPBtn.setOnMouseClicked(event -> Visuals.makeMWST());
+        runAlgorithmBtn.setLayoutX(1200);
+        runAlgorithmBtn.setLayoutY(493);
+        runAlgorithmBtn.setPrefSize(150,40);
+
+        runAlgorithmBtn.setOnMouseClicked(event -> Visuals.callAlg());
 
     }
 
-    private void makeColourBtn(){
-        colourGraphBtn=new Button("Colour Graph");
-        colourGraphBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);
-        Background background=new Background(backgroundFill);
-        colourGraphBtn.setBackground(background);
+    private void makeAlgorithmBox (){
 
-        colourGraphBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-        Tooltip t = new Tooltip("Click here to colour the graph using the graph colouring algorithm");
-        Tooltip.install(null, t);
-        colourGraphBtn.setTooltip(t);
+        algorithmComboBox=new ComboBox();
+        algorithmComboBox.setStyle("-fx-font: 23px \"Serif\";");
+        algorithmComboBox.getItems().addAll("Connected Graph?","Complete Graph?","Make MWSP", "Colour Graph");
+        algorithmComboBox.setValue("Select An Algorithm");
 
-        colourGraphBtn.setLayoutX(985);
-        colourGraphBtn.setLayoutY(550);
-        colourGraphBtn.setPrefWidth(370);
-        colourGraphBtn.setPrefHeight(5);
+        algorithmComboBox.setLayoutX(822);
+        algorithmComboBox.setLayoutY(490);
 
-        colourGraphBtn.setOnMouseClicked(event -> Visuals.colourGraph());
+        algorithmComboBox.setPrefSize(350,30);
+
 
     }
 
-    private void makeDFSBtn(){
-        dfsBtn=new Button("Perform DFS");
-        dfsBtn.setTextFill(Color.BLACK);
+    private void makeSearchBtn(){
+        searchBtn=new Button("Run Search");
+        searchBtn.setTextFill(Color.BLACK);
         BackgroundFill backgroundFill=new BackgroundFill(Color.DARKSALMON,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
-        dfsBtn.setBackground(background);
+        searchBtn.setBackground(background);
 
-        dfsBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-        Tooltip t = new Tooltip("Click here perform a dfs on on the current graph from the root");
+        searchBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+        Tooltip t = new Tooltip("Click here perform the selected search on on the current graph from the root");
         Tooltip.install(null, t);
-        dfsBtn.setTooltip(t);
+        searchBtn.setTooltip(t);
 
-        dfsBtn.setLayoutX(985);
-        dfsBtn.setLayoutY(600);
-        dfsBtn.setPrefWidth(370);
-        dfsBtn.setPrefHeight(5);
+        searchBtn.setLayoutX(1200);
+        searchBtn.setLayoutY(553);
+        searchBtn.setPrefWidth(150);
+        searchBtn.setPrefHeight(40);
 
-        dfsBtn.setOnMouseClicked(event -> Visuals.callDFS());
+        searchBtn.setOnMouseClicked(event -> Visuals.callSearch());
+
+    }
+
+
+
+    private void makeCombBox (){
+
+        searchComboBox=new ComboBox();
+        searchComboBox.setStyle("-fx-font: 23px \"Serif\";");
+        searchComboBox.getItems().addAll("DFS","BFS");
+        searchComboBox.setValue("Select A Search");
+
+        searchComboBox.setLayoutX(822);
+        searchComboBox.setLayoutY(550);
+
+        searchComboBox.setPrefSize(350,30);
+
 
     }
 
@@ -442,4 +481,10 @@ public class ConfigureScreen {
         button.setBackground(background);
 
     }//Visual Aspect so the user can see the button selected as on and to confirm it is off
+
+    public static String getSearchSelected(){
+        return (String) searchComboBox.getValue();
+    }
+
+    public static String getAlgorithmSelected(){return (String) algorithmComboBox.getValue();}
 }

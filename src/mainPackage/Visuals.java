@@ -586,7 +586,34 @@ public class Visuals {
         return results;
     }
 
-    public static void checkCompleted() {
+    public static void callAlg(){
+
+
+        switch (ConfigureScreen.getAlgorithmSelected()){
+            case "Select An Algorithm":
+                JOptionPane.showMessageDialog(null,"Please Select An Algorithm");
+                return;
+
+            case "Connected Graph?":
+                checkConnected();
+                return;
+
+            case "Complete Graph?":
+                checkCompleted();
+                return;
+
+            case "Make MWSP":
+                makeMWST();
+                return;
+
+            case "Colour Graph":
+                colourGraph();
+                return;
+
+        }
+    }
+
+    private static void checkCompleted() {
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 28));
@@ -600,7 +627,7 @@ public class Visuals {
         }
     }
 
-    public static void checkConnected() {
+    private static void checkConnected() {
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 28));
@@ -614,7 +641,7 @@ public class Visuals {
 
     }
 
-    public static void makeMWST() {
+    private static void makeMWST() {
         ArrayList<WeightedEdge> usedWeightedEdges = graphMethods.constructMWSP();
         if(usedWeightedEdges.size()==0){
             return;
@@ -694,7 +721,7 @@ public class Visuals {
 
     }
 
-    public static void colourGraph(){
+    private static void colourGraph(){
         resetColors();
         ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
@@ -907,9 +934,22 @@ public class Visuals {
 
     }
 
-    public static void callDFS(){
+    public static void callSearch(){
         SearchVisual searchVisual=new SearchVisual();
-        searchVisual.DFS();
+
+        switch (ConfigureScreen.getSearchSelected()){
+            case "Select A Search":
+                JOptionPane.showMessageDialog(null,"Please select a search type first");
+                return;
+            case "DFS":
+                searchVisual.search("DFS");
+                return;
+
+            case "BFS":
+                searchVisual.search("BFS");
+                return;
+        }
+
     }
 
 }

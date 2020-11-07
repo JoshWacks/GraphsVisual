@@ -127,15 +127,15 @@ public class Graph {
     }
 
     public void deleteVertex(Vertex vertex){
-        for(Vertex v:vertices){
+        for(Vertex v:getVertices()){
             v.removeAdjacency(vertex);
         }
-        for(Edge e:edges){
+        for(Edge e:getEdges()){
             if(e.containsVertex(vertex)){
                 deleteEdge(e);
             }
         }
-        for (WeightedEdge w:weightedEdges){
+        for (WeightedEdge w:getWeightedEdges()){
             if(w.containsVertex(vertex)){
                 deleteWeightedEdge(w);
             }

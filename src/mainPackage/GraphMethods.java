@@ -1,17 +1,17 @@
 package mainPackage;
 
 import javafx.util.Pair;
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
-import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class GraphMethods {
     private static Graph graph;
     private static boolean[] visited;
-    private static ArrayList<Vertex> visitedDFS;
+    private static ArrayList<Vertex> visitedVertex;
     private static ArrayList<Edge>usedEdges;
 
     public GraphMethods(Graph g) {
@@ -31,8 +31,12 @@ public class GraphMethods {
     }
 
     public boolean checkConnectedGraph( ) {
+        if(graph.getVertices().size()==0){
+            return true;
+        }
         visited=new boolean[graph.getVertices().size()];
         Arrays.fill(visited, false);
+
 
         DFS(graph.getVertex(0));
 
@@ -167,16 +171,16 @@ public class GraphMethods {
     }
 
     public ArrayList<Vertex> callDFS(){
-        visitedDFS=new ArrayList<>();
+        visitedVertex=new ArrayList<>();
         usedEdges=new ArrayList<>();//resets all the arrays
 
         Vertex root=graph.getRoot();
         dfs(root);
-        return visitedDFS;
+        return visitedVertex;
     }
 
     private void dfs(Vertex currentVertex){
-        visitedDFS.add(currentVertex);
+        visitedVertex.add(currentVertex);
         Vertex nextVertex;
         while (unvisitedAdjacency(currentVertex).getxPos()!=-1){//It has an unvisited adjacency and there is an edge to it
 
@@ -207,7 +211,7 @@ public class GraphMethods {
 
     private Vertex unvisitedAdjacency(Vertex vertex){
         for(Vertex adj:vertex.getAdjacencies()){
-            if(!visitedDFS.contains(adj)){//If there is an unvisited adjacency at that current vertex
+            if(!visitedVertex.contains(adj)){//If there is an unvisited adjacency at that current vertex
                if(isEdge(vertex,adj)){//And there is a path to that unvisited vertex
                    return adj;
                }
@@ -229,5 +233,41 @@ public class GraphMethods {
             }
         }
         return new Edge(new Vertex(-1,-1,-1),new Vertex(-1,-1,-1));
+    }
+
+    public ArrayList<Vertex> callBFS(){
+        visitedVertex=new ArrayList<>();
+        usedEdges=new ArrayList<>();//resets all the arrays
+
+        BFS();
+        return visitedVertex;
+    }
+
+    private void BFS(){
+        Vertex[] parent =new Vertex[graph.getNumberVertices()];
+
+        Arrays.fill(parent,new Vertex(-1,-1,-1));
+
+        boolean[] marked =new boolean[graph.getNumberVertices()];
+        Arrays.fill(marked,false);
+
+        Vertex currentVertex=graph.getRoot();
+        Queue<Vertex>list=new LinkedList<>() ;
+        list.add(currentVertex);
+        marked[currentVertex.getVertexNumber()]=true;
+
+        Vertex nextVertex;
+        while (!list.isEmpty()){
+            nextVertex=list.remove();
+            visitedVertex.add(nextVertex);//adds it to the visited array so we get the order it is visited in
+            for(Vertex vertex:nextVertex.getAdjacencies()){//For each vertex in the neighbourhood of the next vertex
+                if(!marked[vertex.getVertexNumber()]){//if we have not been there before
+                    marked[vertex.getVertexNumber()]=true;
+                    parent[vertex.getVertexNumber()]=nextVertex;
+                    list.add(vertex);
+                }
+            }
+
+        }
     }
 }
