@@ -26,6 +26,7 @@ public class ConfigureScreen {
     private static Button deleteEdgeBtn;
     private static Button deleteVertexBtn;
     private static Button setRootBtn;
+    private static Button setDestBtn;
 
     private static ComboBox algorithmComboBox;
     private static Button runAlgorithmBtn;
@@ -54,6 +55,7 @@ public class ConfigureScreen {
         makeDeleteEdgeBtn(new Background(backgroundFillDel));
         makeDeleteVertexBtn(new Background(backgroundFillDel));
         makeRootBtn();
+        makeDestBtn();
 
         makeAlgBtn();
         makeAlgorithmBox();
@@ -71,6 +73,7 @@ public class ConfigureScreen {
         group.getChildren().add(deleteEdgeBtn);
         group.getChildren().add(deleteVertexBtn);
         group.getChildren().add(setRootBtn);
+        group.getChildren().add(setDestBtn);
 
         group.getChildren().add(algorithmComboBox);
         group.getChildren().add(runAlgorithmBtn);
@@ -112,7 +115,8 @@ public class ConfigureScreen {
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=1;
             }
         });
@@ -145,7 +149,8 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=2;
             }
         });
@@ -178,7 +183,8 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=3;
             }
         });
@@ -188,7 +194,7 @@ public class ConfigureScreen {
     private void makeRootBtn(){
         setRootBtn=new Button("Indicate Root");
         setRootBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);//The two types of backgrounds used
+        BackgroundFill backgroundFill=new BackgroundFill(Color.FORESTGREEN,new CornerRadii(3),null);//The two types of backgrounds used
         Background background=new Background(backgroundFill);
         setRootBtn.setBackground(background);
 
@@ -205,7 +211,7 @@ public class ConfigureScreen {
         setRootBtn.setOnMouseClicked(event -> {
             if(btnSelected==6){
                 btnSelected=0;
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
             }
             else{
                 toggleBtnOn(setRootBtn);
@@ -214,8 +220,45 @@ public class ConfigureScreen {
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=6;
+            }
+        });
+        buttons.add(setRootBtn);
+    }
+
+    private void makeDestBtn(){
+        setDestBtn=new Button("Indicate Destination");
+        setDestBtn.setTextFill(Color.BLACK);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.BLUEVIOLET,new CornerRadii(3),null);//The two types of backgrounds used
+        Background background=new Background(backgroundFill);
+        setDestBtn.setBackground(background);
+
+        setDestBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To indicate the destination click here then on the vertex you would like to be the destination");
+        Tooltip.install(null, t);
+        setDestBtn.setTooltip(t);
+
+        setDestBtn.setLayoutX(220);
+        setDestBtn.setLayoutY(90);
+        setDestBtn.setPrefWidth(240);
+        setDestBtn.setPrefHeight(40);
+
+        setDestBtn.setOnMouseClicked(event -> {
+            if(btnSelected==7){
+                btnSelected=0;
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
+            }
+            else{
+                toggleBtnOn(setDestBtn);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+
+                btnSelected=7;
             }
         });
         buttons.add(setRootBtn);
@@ -247,7 +290,8 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=4;
             }
         });
@@ -281,7 +325,8 @@ public class ConfigureScreen {
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
-                toggleBtnOff(setRootBtn,Color.GOLD);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
                 btnSelected=5;
             }
         });
@@ -291,7 +336,7 @@ public class ConfigureScreen {
     private void makeViewListBtn(){
         viewListBtn=new Button("View Adjacency List");
         viewListBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.FORESTGREEN,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         viewListBtn.setBackground(background);
 
@@ -312,7 +357,7 @@ public class ConfigureScreen {
     private void makeViewMatrixBtn(){
         viewMatrixBtn=new Button("View Matrix");
         viewMatrixBtn.setTextFill(Color.BLACK);
-        BackgroundFill backgroundFill=new BackgroundFill(Color.FORESTGREEN,new CornerRadii(3),null);
+        BackgroundFill backgroundFill=new BackgroundFill(Color.GOLD,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         viewMatrixBtn.setBackground(background);
 

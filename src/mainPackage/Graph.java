@@ -10,6 +10,7 @@ public class Graph {
     private ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
     private ArrayList<Edge>edges=new ArrayList<>();
     private Vertex root;
+    private Vertex destination;
 
     public Graph(){
         root=null;
@@ -156,9 +157,12 @@ public class Graph {
         return root;
     }
 
+    public Vertex getDestination() {
+        return destination;
+    }
 
-
-
-
+    public void setDestination(Vertex destination) {
+        this.destination = destination;
+    }
 }
 

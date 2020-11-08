@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 //---->   4:Delete a vertex
 //---->   5:Delete an edge
 //---->   6:Indicate root
-
+//---->   7:Indicate Destination
 
 
 

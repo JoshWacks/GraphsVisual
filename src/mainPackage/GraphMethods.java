@@ -180,13 +180,17 @@ public class GraphMethods {
     }
 
     private void dfs(Vertex currentVertex){
+
         visitedVertex.add(currentVertex);
         Vertex nextVertex;
-        while (unvisitedAdjacency(currentVertex).getxPos()!=-1){//It has an unvisited adjacency and there is an edge to it
+        if (currentVertex.isDest()){
+            return;
+        }
+        while (unvisitedAdjacency(currentVertex).getxPos()!=-1 ){//It has an unvisited adjacency and there is an edge to it
 
             nextVertex=unvisitedAdjacency(currentVertex);
             usedEdges.add(getEdge(currentVertex,nextVertex));
-            System.out.println(getEdge(currentVertex,nextVertex).toSring());
+
             dfs(nextVertex);
         }
 
@@ -257,7 +261,7 @@ public class GraphMethods {
         marked[currentVertex.getVertexNumber()]=true;
 
         Vertex nextVertex;
-        while (!list.isEmpty()){
+        while (!list.isEmpty() && !visitedVertex.contains(graph.getDestination())){
             nextVertex=list.remove();
             visitedVertex.add(nextVertex);//adds it to the visited array so we get the order it is visited in
             for(Vertex vertex:nextVertex.getAdjacencies()){//For each vertex in the neighbourhood of the next vertex

@@ -12,7 +12,7 @@ public class Vertex {
     private double xCentre;
     private double yCentre;
     private boolean isRoot;
-
+    private boolean isDest;
 
 
     public Vertex(int num,double x,double y){
@@ -23,6 +23,7 @@ public class Vertex {
         xCentre=-1;
         yCentre=-1;
         isRoot=false;
+        isDest=false;
     }
     public ArrayList<Vertex>getAdjacencies(){
         ArrayList<Vertex>newAdj =new ArrayList<>();
@@ -88,6 +89,14 @@ public class Vertex {
 
     public void setRoot(boolean root) {
         isRoot = root;
+    }
+
+    public boolean isDest() {
+        return isDest;
+    }
+
+    public void setDest(boolean dest) {
+        isDest = dest;
     }
 
     public boolean liesInVertex(double x, double y){

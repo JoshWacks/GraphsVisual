@@ -82,6 +82,9 @@ public class Visuals {
             case 6:
                 selectRoot(x,y);
                 return;
+            case 7:
+                selectDest(x,y);
+                return;
 
         }
         if (ConfigureScreen.getBtnSelected() == 2 || ConfigureScreen.getBtnSelected() == 3) {
@@ -198,7 +201,7 @@ public class Visuals {
 
     //Unhighlight a specific vertex on the board
     private void unhighlightVertex(Vertex v) {
-        if(v.isRoot()){
+        if(v.isRoot() || v.isDest()){
             return;
         }
         gc.setStroke(Color.WHITE);
@@ -209,22 +212,72 @@ public class Visuals {
 
     //Allows the user to select which root they would like to be the vertex
     private void selectRoot(double x,double y){
-        Vertex v=graph.getRoot();
-        if(v!=null){
-            v.setRoot(false);
-            unhighlightVertex(v);
-        }
         Vertex vertex=getSelectedVertex(x,y);
-
         if(vertex.getxPos()==-1){
             JOptionPane.showMessageDialog(null,"Please select a valid vertex");
             return;
+        }
+        Vertex root=graph.getRoot();
+
+        if(vertex.equals(root)){
+            root.setRoot(false);
+            unhighlightVertex(root);
+            graph.setRoot(null);
+            return;
+        }
+
+        if(root!=null){
+            root.setRoot(false);
+            unhighlightVertex(root);
+            graph.setRoot(null);
+        }
+        Vertex dest=graph.getDestination();
+
+        if(dest!=null && dest.equals(vertex)){
+            dest.setDest(false);
+            graph.setDestination(null);
         }
 
         vertex.setRoot(true);
         graph.setRoot(vertex);
 
-        gc.setStroke(Color.RED);
+        gc.setStroke(Color.FORESTGREEN);
+        gc.setLineWidth(4.0D);
+        gc.strokeOval(vertex.getxPos(), vertex.getyPos(),40, 40);
+    }
+
+    private void selectDest(Double x,Double y){
+        Vertex vertex=getSelectedVertex(x,y);
+        if(vertex.getxPos()==-1){
+            JOptionPane.showMessageDialog(null,"Please select a valid vertex");
+            return;
+        }
+        Vertex dest=graph.getDestination();
+
+        if( vertex.equals(dest)){//deselecting a destination
+            dest.setDest(false);
+            unhighlightVertex(dest);
+            graph.setDestination(null);
+            return;
+        }
+
+        if(dest!=null){
+            dest.setDest(false);
+            unhighlightVertex(dest);
+            graph.setDestination(null);
+        }
+
+        Vertex root=graph.getRoot();
+
+        if(root != null && root.equals(vertex)){
+            root.setRoot(false);
+            graph.setRoot(null);
+        }
+
+        vertex.setDest(true);
+        graph.setDestination(vertex);
+
+        gc.setStroke(Color.BLUEVIOLET);
         gc.setLineWidth(4.0D);
         gc.strokeOval(vertex.getxPos(), vertex.getyPos(),40, 40);
     }
