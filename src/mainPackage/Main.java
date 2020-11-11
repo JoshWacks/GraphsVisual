@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 //TODO add a button to delete arc edges
 //when re-drawing arc edges it re-draws incorrectly
 //Add a clear board button
-//Git
+
 
 //convention for buttons
 //---->   1:add a vertex
