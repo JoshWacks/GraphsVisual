@@ -61,12 +61,12 @@ public class GraphMethods {
     }
     private boolean inValidSpanningTree(){
         if(!checkConnectedGraph()){//first checks if it is connected
-            JOptionPane.showMessageDialog(null,"This graph is not connected, thus a MWSP cannot be made");
+            JOptionPane.showMessageDialog(null,"This graph is not connected, thus this algorithm cannot run");
             return true;
         }
 
         if(graph.getEdges().size()>0){
-            JOptionPane.showMessageDialog(null,"All the edges must be weighted to create a MWSP");
+            JOptionPane.showMessageDialog(null,"All the edges must be weighted ,thus this algorithm cannot run");
             return true;
         }
 
@@ -275,11 +275,12 @@ public class GraphMethods {
         }
     }
 
-    public Integer[] dijkstra(){//To create a shortest path tree
+    public ArrayList<Integer[]> dijkstra(){//To create a shortest path tree
 
         Integer[] parent =new Integer[graph.getNumberVertices()];
+        ArrayList<Integer[]>results=new ArrayList<>();
         if(inValidSpanningTree()){
-            return parent;
+            return null;
         }
         visitedVertex=new ArrayList<>();
         visited=new boolean[graph.getNumberVertices()];
@@ -295,68 +296,56 @@ public class GraphMethods {
 
         visitedVertex.add(root);
         visited[root.getVertexNumber()]=true;
-        for(WeightedEdge weightedEdge: graph.getWeightedEdges()){
-            if(weightedEdge.containsVertex(root)){//We check where we can go from the source
-                if(!weightedEdge.getVertexA().equals(root)){//We need to know which one is not the root
-                    dist[weightedEdge.getVertexA().getVertexNumber()]=weightedEdge.getWeight();
-                }else {
-                    dist[weightedEdge.getVertexB().getVertexNumber()]=weightedEdge.getWeight();
-                }
+
+        for(Vertex vertex:graph.getVertices()){
+            if(vertex!=root && graph.getWeightedEdgeBetween(root,vertex)!=null){
+
+                dist[vertex.getVertexNumber()]=graph.getWeightedEdgeBetween(root,vertex).getWeight();
+                parent[vertex.getVertexNumber()]=root.getVertexNumber();
             }
         }
-        Vertex currentVertex = null;
+        Vertex v = null;
 
         while(visitedVertex.size()<graph.getVertices().size()){
-            System.out.println("Size "+visitedVertex.size());
-            for(Vertex vertex:visitedVertex){
-                for(Vertex adj:vertex.getAdjacencies()){
-                    if((!visitedVertex.contains(adj)) && checkMinCostVertex(adj,dist)){//That adjacency has not been visited yet and we can get to it
-                        //And it is the cheapest possible way of getting to there
-                        System.out.println("RUn");
-                        currentVertex=adj;
-                        parent[adj.getVertexNumber()]=vertex.getVertexNumber();
 
-                    }
-                }
-            }
 
-            if(currentVertex==null){
-                continue;
-            }
-            visitedVertex.add(currentVertex);
-            visited[currentVertex.getVertexNumber()]=true;
+            v=getMinCostVertex(dist);
+//
+            visitedVertex.add(v);
+            visited[v.getVertexNumber()]=true;
             for(Vertex w:graph.getVertices()){
-                if(currentVertex.getAdjacencies().contains(w) || !visitedVertex.contains(w)){//It is either in the neighborhood of currentvertex or not visited before
-                    if(graph.getWeightedEdgeBetween(currentVertex,w)!=null) {
-                        if (dist[currentVertex.getVertexNumber()] + graph.getWeightedEdgeBetween(currentVertex, w).getWeight() < dist[w.getVertexNumber()]) {
-                            dist[w.getVertexNumber()]=dist[currentVertex.getVertexNumber()] + graph.getWeightedEdgeBetween(currentVertex, w).getWeight();
-                            parent[w.getVertexNumber()]=currentVertex.getVertexNumber();
+                if(v.getAdjacencies().contains(w) && !visitedVertex.contains(w)){//It is either in the neighborhood of currentvertex or not visited before
+                    if(graph.getWeightedEdgeBetween(v,w)!=null) {
+                        if (dist[v.getVertexNumber()] + graph.getWeightedEdgeBetween(v, w).getWeight() < dist[w.getVertexNumber()]) {
+                            dist[w.getVertexNumber()]=dist[v.getVertexNumber()] + graph.getWeightedEdgeBetween(v, w).getWeight();
+                            parent[w.getVertexNumber()]=v.getVertexNumber();
                         }
                     }
                 }
             }
-            currentVertex=null;
-        }
-        for(Vertex v:visitedVertex){
-            System.out.println(v.toString());
+
         }
 
 
-        return parent;
+        results.add(parent);
+        results.add(dist);
+        return results;
     }
 
-    private boolean checkMinCostVertex(Vertex adj, Integer[] dist){
 
-        System.out.println();
+    private Vertex getMinCostVertex( Integer[] dist){
+        Vertex minVertex=null;
         int min=99999;
         for(int i=0;i<dist.length;i++){//Finding the smallest cost
             Integer integer=dist[i];
             if(integer<min && !visited[i]){
                 min=integer;
+                minVertex=graph.getVertex(i);
             }
         }
-        System.out.println("Min "+min);
-        return dist[adj.getVertexNumber()] == min;
+
+        return minVertex;
     }
+
 
 }

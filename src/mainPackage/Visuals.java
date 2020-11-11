@@ -525,7 +525,6 @@ public class Visuals {
         displayGC.setFill(Color.ANTIQUEWHITE);
         displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());
 
-
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 16));
         displayGC.fillText("Vertex |                                         Neighbourhood ", 2, 13);
@@ -704,76 +703,7 @@ public class Visuals {
             return;
         }
 
-        Stage stage = new Stage();
-        stage.setTitle("View Created Graph");
-        Group group=new Group();
-        stage.setResizable(false);
-
-        Canvas generatedCanvas=new Canvas(canvasWidth,canvasHeight);
-        generatedCanvas.setLayoutX(0);
-        generatedCanvas.setLayoutY(100);
-        group.getChildren().add(generatedCanvas);
-        GraphicsContext generatedGC=generatedCanvas.getGraphicsContext2D();
-        generatedGC.setFill(Color.WHITE);
-        generatedGC.setLineWidth(2.0D);
-        generatedGC.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        Vertex v0;
-        Vertex v1;
-        Pair<Double,Double>pair0;
-        Pair<Double,Double>pair1;
-
-        for(WeightedEdge weightedEdge:usedWeightedEdges){
-            v0=weightedEdge.vertexA;
-            v1=weightedEdge.vertexB;
-
-            generatedGC.setLineWidth(2.0D);
-            generatedGC.setFill(Color.BURLYWOOD);
-            generatedGC.fillOval(v0.getxPos(),v0.getyPos(),40,40);
-            generatedGC.fillOval(v1.getxPos(),v1.getyPos(),40,40);
-
-            generatedGC.setFill(Color.BLACK);
-            generatedGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-            if ((v0.getVertexNumber() + "").length() == 1) {
-                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 15, v0.getyPos()+ 25);
-            } else {
-                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 10, v0.getyPos()+ 25);
-            }
-
-            if ((v1.getVertexNumber() + "").length() == 1) {
-                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 15, v1.getyPos()+ 25);
-            } else {
-                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 10, v1.getyPos()+ 25);
-            }
-
-            pair0=weightedEdge.firstXY;
-            pair1=weightedEdge.secondXY;
-            generatedGC.setLineWidth(3.0D);
-            generatedGC.strokeLine(pair0.getKey(),pair0.getValue(),pair1.getKey(),pair1.getValue());
-
-            double[] midpoint = getMidpoint(v0, v1);
-
-            generatedGC.fillRect(midpoint[0] - 15, midpoint[1] - 15, 35, 35);
-
-            generatedGC.setFill(Color.WHITE);
-            int incr;
-            String temp=weightedEdge.getWeight()+"";
-            if (temp.length() == 1) {
-                incr = 3;
-            } else {
-                incr = 8;
-            }
-            generatedGC.fillText(temp + "", midpoint[0] - incr, midpoint[1] + 7);
-
-        }
-
-
-
-        Scene scene = new Scene(group, canvasWidth-10, canvasHeight+90);
-        scene.setFill(Color.BLACK);
-        stage.setScene(scene);
-
-        stage.show();
+        constructShortestPathTree(usedWeightedEdges);
 
 
     }
@@ -921,17 +851,125 @@ public class Visuals {
             JOptionPane.showMessageDialog(null,"Please select a root first");
             return;
         }
-        Integer[] parent =graphMethods.dijkstra();
+        ArrayList<Integer[]> results =graphMethods.dijkstra();
+        if(results==null){
+            return;
+        }
+        Integer[]parent=results.get(0);
+        Integer[]cost=results.get(1);
         ArrayList<WeightedEdge>usedEdges=new ArrayList<>();
 
-        for(int i=1;i<parent.length;i++){
+
+        for(int i=1;i<parent.length;i++){//We go through the parent array to determine which edges were used
            int parentNum=parent[i];
            usedEdges.add(graph.getWeightedEdgeBetweenNumbers(parentNum,i));
         }
+        if(usedEdges.isEmpty()){
+            return;
+        }
+        constructShortestPathTree(usedEdges);
+        showDistances(cost);
+    }
+
+    private static void showDistances(Integer[]cost){
+        displayGC.setFill(Color.ANTIQUEWHITE);
+        displayGC.fillRect(0, 0, displayCanvas.getWidth(), displayCanvas.getHeight());//Clears the display canvas
+
+
+        displayGC.setFill(Color.BLACK);
+        displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 16));
+        displayGC.fillText("Vertex |                                         Cost From Vertex "+graph.getRoot().getVertexNumber(), 2, 13);
+        displayGC.fillText("_____________________________________________________________________________", 0, 14);
+
+        int vertexNumber=0;
+        for(Integer integer:cost){
+            displayGC.fillText(vertexNumber+"      |",20,30+vertexNumber*20);
+            displayGC.fillText(integer+"",200,30+vertexNumber*20);
+            displayGC.fillText("_____________________________________________________________________________", 0, (31+vertexNumber*20));
+            vertexNumber++;
+        }
+
+
+
+
+    }
+
+    private static void constructShortestPathTree(ArrayList<WeightedEdge>usedEdges){
+        Stage stage = new Stage();
+        stage.setX(0);//set it on the top left of the screen
+        stage.setY(0);
+        stage.setTitle("View Created Graph");
+        Group group=new Group();
+        stage.setResizable(false);
+
+        Canvas generatedCanvas=new Canvas(canvasWidth,canvasHeight);
+
+        generatedCanvas.setLayoutX(0);
+        generatedCanvas.setLayoutY(100);
+        group.getChildren().add(generatedCanvas);
+        GraphicsContext generatedGC=generatedCanvas.getGraphicsContext2D();
+        generatedGC.setFill(Color.WHITE);
+        generatedGC.setLineWidth(2.0D);
+        generatedGC.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        Vertex v0;
+        Vertex v1;
+        Pair<Double,Double>pair0;
+        Pair<Double,Double>pair1;
 
         for(WeightedEdge weightedEdge:usedEdges){
-            System.out.println(weightedEdge.toString());
+            v0=weightedEdge.vertexA;
+            v1=weightedEdge.vertexB;
+
+            generatedGC.setLineWidth(2.0D);
+            generatedGC.setFill(Color.BURLYWOOD);
+            generatedGC.fillOval(v0.getxPos(),v0.getyPos(),40,40);
+            generatedGC.fillOval(v1.getxPos(),v1.getyPos(),40,40);
+
+            generatedGC.setFill(Color.BLACK);
+            generatedGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+            if ((v0.getVertexNumber() + "").length() == 1) {
+                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 15, v0.getyPos()+ 25);
+            } else {
+                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 10, v0.getyPos()+ 25);
+            }
+
+            if ((v1.getVertexNumber() + "").length() == 1) {
+                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 15, v1.getyPos()+ 25);
+            } else {
+                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 10, v1.getyPos()+ 25);
+            }
+
+            pair0=weightedEdge.firstXY;
+            pair1=weightedEdge.secondXY;
+            generatedGC.setLineWidth(3.0D);
+            generatedGC.strokeLine(pair0.getKey(),pair0.getValue(),pair1.getKey(),pair1.getValue());
+
+            double[] midpoint = getMidpoint(v0, v1);
+
+            generatedGC.fillRect(midpoint[0] - 15, midpoint[1] - 15, 35, 35);
+
+            generatedGC.setFill(Color.WHITE);
+            int incr;
+            String temp=weightedEdge.getWeight()+"";
+            if (temp.length() == 1) {
+                incr = 3;
+            } else {
+                incr = 8;
+            }
+            generatedGC.fillText(temp + "", midpoint[0] - incr, midpoint[1] + 7);
+
         }
+
+
+
+        Scene scene = new Scene(group, canvasWidth-10, canvasHeight+90);
+        scene.setFill(Color.BLACK);
+        stage.setScene(scene);
+
+        stage.show();
+
+
     }
 
 
