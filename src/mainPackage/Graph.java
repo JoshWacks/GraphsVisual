@@ -1,16 +1,16 @@
 package mainPackage;
 
-import javax.swing.*;
+
 import java.util.ArrayList;
-//TODO move everything from GraphMethods into here
+
 
 public class Graph {
 
-    private ArrayList<Vertex>vertices=new ArrayList<>();
-    private ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
-    private ArrayList<Edge>edges=new ArrayList<>();
-    private Vertex root;
-    private Vertex destination;
+    private static ArrayList<Vertex>vertices=new ArrayList<>();
+    private static ArrayList<WeightedEdge> weightedEdges =new ArrayList<>();
+    private static ArrayList<Edge>edges=new ArrayList<>();
+    private static Vertex root;
+    private static Vertex destination;
 
     public Graph(){
         root=null;
@@ -115,15 +115,16 @@ public class Graph {
     }
 
     public void deleteEdge(Edge e){
-        e.getVertexA().getAdjacencies().remove(e.vertexB);
-        e.getVertexB().getAdjacencies().remove(e.vertexA);
+
+        e.getVertexA().removeAdjacency(e.vertexB);
+        e.getVertexB().removeAdjacency(e.vertexA);
         edges.set(edges.indexOf(e),null);
     }
 
     public void deleteWeightedEdge(WeightedEdge w)
     {
-        w.getVertexA().getAdjacencies().remove(w.vertexB);
-        w.getVertexB().getAdjacencies().remove(w.vertexA);
+        w.getVertexA().removeAdjacency(w.vertexB);
+        w.getVertexB().removeAdjacency(w.vertexA);
         weightedEdges.set(weightedEdges.indexOf(w),null);
     }
 
@@ -163,6 +164,26 @@ public class Graph {
 
     public void setDestination(Vertex destination) {
         this.destination = destination;
+    }
+
+
+
+    public WeightedEdge getWeightedEdgeBetween(Vertex a,Vertex b){
+        for(WeightedEdge weightedEdge:getWeightedEdges()){
+            if(weightedEdge.betweenVertices(a,b)){
+                return weightedEdge;
+            }
+        }
+        return null;
+    }
+
+    public WeightedEdge getWeightedEdgeBetweenNumbers(int a,int b){
+        for(WeightedEdge weightedEdge:getWeightedEdges()){
+            if(weightedEdge.betweenVerticesNums(a,b)){
+                return weightedEdge;
+            }
+        }
+        return null;
     }
 }
 

@@ -460,7 +460,7 @@ public class ConfigureScreen {
 
         algorithmComboBox=new ComboBox();
         algorithmComboBox.setStyle("-fx-font: 23px \"Serif\";");
-        algorithmComboBox.getItems().addAll("Connected Graph?","Complete Graph?","Make MWSP", "Colour Graph");
+        algorithmComboBox.getItems().addAll("Connected Graph?","Complete Graph?","Make MWSP", "Colour Graph","Make Shortest Path Tree\n(Dijkstra's Algorithm)");
         algorithmComboBox.setValue("Select An Algorithm");
 
         algorithmComboBox.setLayoutX(822);

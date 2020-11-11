@@ -38,6 +38,7 @@ public class WeightedEdge extends Edge{
         return midPoint;
     }
 
+    @Override
     public String toString(){
         return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" Weight: "+ weight+
                 " FirstXY: ("+firstXY.getKey()+";"+firstXY.getValue()+

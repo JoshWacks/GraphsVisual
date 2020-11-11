@@ -42,8 +42,11 @@ public class Edge {
     public boolean liesOnEdge(double x,double y){
         double prod=x*getGradient();
         double sum=prod+getC();
-        System.out.println("Y: "+ y+" Sum: "+sum+" M:" +getGradient()+" C:"+ getC());
-        return sum - 7 < y && sum + 7 > y;
+
+        double diff=y-getC();
+        double quotient=diff/getGradient();
+
+        return sum - 9 < y && y< sum+9 || quotient-9<x && x<quotient+9;
 
     }
 
@@ -65,6 +68,20 @@ public class Edge {
     public boolean containsVertex(Vertex v){
         return v.equals(vertexA) || v.equals(vertexB);
     }
+
+    public boolean betweenVertices(Vertex a,Vertex b){//Methods to check if it is between these two vertices
+
+        return (vertexA.equals(a) && vertexB.equals(b)) || (vertexA.equals(b) && vertexB.equals(a));
+
+    }
+
+    public boolean betweenVerticesNums(int a,int b){//Methods to check if it is between these two vertices
+
+        return (vertexA.getVertexNumber()==a && vertexB.getVertexNumber()==b || vertexA.getVertexNumber()==b && vertexB.getVertexNumber()==a);
+
+    }
+
+
 
     public String toSring(){
         return "Vertex A: " + vertexA.getVertexNumber()+ " Vertex B: " + vertexB.getVertexNumber()+" FirstXY: ("+firstXY.getKey()+";"+firstXY.getValue()+

@@ -2,6 +2,7 @@ package mainPackage;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,6 +14,7 @@ import javafx.util.Pair;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -92,11 +94,11 @@ public class Visuals {
                 Vertex v = getSelectedVertex(x - 5, y - 5);
                 if (numSelectedVertices == 0) {
                     selectedVertices[0] = v;
-                    highlightVertex(v);
+                    highlightVertex(v,Color.LIME);
                     numSelectedVertices = 1;
                 } else if (numSelectedVertices == 1) {
                     selectedVertices[1] = v;
-                    highlightVertex(v);
+                    highlightVertex(v,Color.LIME);
                     unhighlightVertex(selectedVertices[0]);
                     unhighlightVertex(selectedVertices[1]);
                     if(!graph.validEdge(selectedVertices[0],selectedVertices[1])){
@@ -190,13 +192,15 @@ public class Visuals {
     }
 
     //Highlights a specific vertex on the board
-    private void highlightVertex(Vertex v) {
-        if(v.isRoot()){
+    private void highlightVertex(Vertex v,Color color) {
+        if(v.isRoot()|| v.isDest()){
             return;
         }
-        gc.setStroke(Color.LIME);
-        gc.setLineWidth(4.0D);
+        gc.setStroke(color);
+        gc.setLineWidth(3.0D);
+
         gc.strokeOval(v.getxPos(), v.getyPos(), 40, 40);
+        gc.strokeOval(v.getxPos(), v.getyPos(), 41, 41);
     }
 
     //Unhighlight a specific vertex on the board
@@ -235,15 +239,12 @@ public class Visuals {
 
         if(dest!=null && dest.equals(vertex)){
             dest.setDest(false);
-            graph.setDestination(null);
-        }
+            graph.setDestination(null);}
+
+       highlightVertex(vertex,Color.FORESTGREEN);
 
         vertex.setRoot(true);
         graph.setRoot(vertex);
-
-        gc.setStroke(Color.FORESTGREEN);
-        gc.setLineWidth(4.0D);
-        gc.strokeOval(vertex.getxPos(), vertex.getyPos(),40, 40);
     }
 
     private void selectDest(Double x,Double y){
@@ -274,12 +275,11 @@ public class Visuals {
             graph.setRoot(null);
         }
 
+        highlightVertex(vertex,Color.BLUEVIOLET);
+
         vertex.setDest(true);
         graph.setDestination(vertex);
 
-        gc.setStroke(Color.BLUEVIOLET);
-        gc.setLineWidth(4.0D);
-        gc.strokeOval(vertex.getxPos(), vertex.getyPos(),40, 40);
     }
 
     private void drawEdge(Vertex[] arr) {
@@ -542,8 +542,6 @@ public class Visuals {
                 int incr = 0;
                 if (vertex.getVertexNumber() > 9 || vertex.getVertexNumber() < -9) {
                     incr = 8;
-                } else {
-                    incr = 0;
                 }
                 displayGC.fillText(",", x + 10 + incr, y);
                 x = x + 20 + incr;
@@ -663,8 +661,14 @@ public class Visuals {
                 colourGraph();
                 return;
 
+            case "Make Shortest Path Tree\n(Dijkstra's Algorithm)":
+                makeShortestPathTree();
+                return;
+
         }
     }
+
+
 
     private static void checkCompleted() {
         displayGC.setFill(Color.ANTIQUEWHITE);
@@ -911,6 +915,26 @@ public class Visuals {
 
     }
 
+
+    private static void makeShortestPathTree() {
+        if(graph.getRoot()==null){
+            JOptionPane.showMessageDialog(null,"Please select a root first");
+            return;
+        }
+        Integer[] parent =graphMethods.dijkstra();
+        ArrayList<WeightedEdge>usedEdges=new ArrayList<>();
+
+        for(int i=1;i<parent.length;i++){
+           int parentNum=parent[i];
+           usedEdges.add(graph.getWeightedEdgeBetweenNumbers(parentNum,i));
+        }
+
+        for(WeightedEdge weightedEdge:usedEdges){
+            System.out.println(weightedEdge.toString());
+        }
+    }
+
+
     private static void deleteEdge(double x,double y){
         if(getSelectedEdge(x,y).vertexA.getVertexNumber()==-1){
             JOptionPane.showMessageDialog(null,"Please make sure to select an edge");
@@ -1001,6 +1025,9 @@ public class Visuals {
             case "BFS":
                 searchVisual.search("BFS");
                 return;
+
+
+
         }
 
     }
