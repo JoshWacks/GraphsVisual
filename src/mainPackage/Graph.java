@@ -92,7 +92,6 @@ public class Graph {
         int maxAdjacencies=-1;
         int maxAdjcenciesPos=-1;
 
-        //TODO make sure it always selects the vertex with the lowest vertex number
 
         for(int i=0;i<vertices.size();i++){
             if(getVertex(i).getColour()==-1&&getVertex(i).getDegree()>maxAdjacencies){

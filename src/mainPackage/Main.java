@@ -12,8 +12,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 //TODO add a button to delete arc edges
-//when re-drawing arc edges it re-draws incorrectly
-//Add a clear board button
+//TODO when re-drawing arc edges it re-draws incorrectly
+//TODO Add a clear board button
+//TODO reorganise visuals into subclasses
 
 
 //convention for buttons
@@ -24,6 +25,8 @@ import javafx.stage.Stage;
 //---->   5:Delete an edge
 //---->   6:Indicate root
 //---->   7:Indicate Destination
+//---->   8:Edit Vertex
+
 
 
 
@@ -56,8 +59,9 @@ public class Main extends Application {
         cs=new ConfigureScreen(group);
         cs.addButtons();//Adds all the buttons to the screen
 
-        Scene scene = new Scene(group, screenBounds.getWidth()-5, screenBounds.getHeight()-10);
+        Scene scene = new Scene(group, screenBounds.getWidth()-20, screenBounds.getHeight()-30);
         scene.setFill(Color.BLACK);
+        scene.getStylesheets().add(this.getClass().getResource("ScreenStyle").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
 

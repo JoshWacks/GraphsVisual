@@ -56,7 +56,7 @@ public class SearchVisual extends Visuals {
 
 
             if(pos[0] >=visitedOrder.size()){
-                resetColors();
+                repaint();
                 executorService.shutdown();
             }
             Vertex vertex=visitedOrder.get(pos[0]);

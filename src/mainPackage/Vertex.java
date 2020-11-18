@@ -13,6 +13,7 @@ public class Vertex {
     private double yCentre;
     private boolean isRoot;
     private boolean isDest;
+    private String vertexValue;
 
 
     public Vertex(int num,double x,double y){
@@ -103,7 +104,13 @@ public class Vertex {
         return xCentre - 20 < x && xCentre + x > x && yCentre - 20 < y && yCentre + 20 > y;//Tells us if the selected point is within the vertex
     }
 
+    public String getVertexValue() {
+        return vertexValue;
+    }
 
+    public void setVertexValue(String vertexValue) {
+        this.vertexValue = vertexValue;
+    }
 
     @Override
     public String toString(){

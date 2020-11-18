@@ -2,7 +2,6 @@ package mainPackage;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -87,6 +86,9 @@ public class Visuals {
             case 7:
                 selectDest(x,y);
                 return;
+            case 8:
+                editVertex(x,y);
+                return;
 
         }
         if (ConfigureScreen.getBtnSelected() == 2 || ConfigureScreen.getBtnSelected() == 3) {
@@ -151,6 +153,7 @@ public class Visuals {
             Vertex vertex = new Vertex(vertexCount, x, y);
             vertex.setxCentre(x + 20);
             vertex.setyCentre(y + 20);
+            vertex.setVertexValue(vertexCount+"");//sets the default value of the vertexValue to its number
             graph.addVertex(vertex);
             vertexCount++;
         } else {
@@ -212,6 +215,38 @@ public class Visuals {
 
         gc.strokeOval(v.getxPos(), v.getyPos(), 40, 40);
         gc.strokeOval(v.getxPos(), v.getyPos(), 41, 41);
+    }
+
+    //Methods to edit the value of a vertex
+    private void editVertex(double x,double y){//gets the x and y of the selected vertex
+        Vertex vertex=getSelectedVertx(x,y);
+        if(vertex.getxPos()==-1){
+            JOptionPane.showMessageDialog(null,"Please select a vertex");
+            return;
+        }
+        highlightVertex(vertex,Color.LIME);
+
+        String  newValue=JOptionPane.showInputDialog("Please enter the new value of the vertex");
+        boolean unique;
+
+        do{//ensures the value they are entering now is not the same of any other vertices
+
+            unique=true;
+            for (Vertex v : graph.getVertices()) {
+                if (v.getVertexValue().equals(newValue) && !v.equals(vertex)||newValue==null||newValue.equals("")) {
+                    unique = false;//we need to ask them for a new value
+                    newValue=JOptionPane.showInputDialog("There is already a vertex that exists with that value and the value cannot be null");
+                    break;
+                }
+            }
+
+
+        }while (!unique);
+
+        vertex.setVertexValue(newValue);
+       repaint();
+
+
     }
 
     //Allows the user to select which root they would like to be the vertex
@@ -398,11 +433,9 @@ public class Visuals {
         points = findCorrectPoints(newArr);
         Pair<Double,Double> pair1=new Pair<>(points[0],points[1]);
         Pair<Double,Double> pair2=new Pair<>(points[2],points[3]);
-        if (v0.getVertexNumber() < v1.getVertexNumber()) {//making sure the smallest vertex is always first
-            weightedEdge = new WeightedEdge(v0, v1, weight,pair1,pair2);
-        } else {
-            weightedEdge = new WeightedEdge(v1, v0, weight,pair1,pair2);
-        }
+
+        weightedEdge = new WeightedEdge(v0, v1, weight,pair1,pair2);
+
         double[] midpoint = getMidpoint(v0, v1);
         weightedEdge.setMidPoint(midpoint);
         graph.addWeightedEdge(weightedEdge);
@@ -533,13 +566,13 @@ public class Visuals {
         int y = 30;
         int x;
         for (Vertex v : graph.getVertices()) {
-            displayGC.fillText(v.getVertexNumber() + "", 20, y);
+            displayGC.fillText(v.getVertexValue() + "", 20, y);
             displayGC.fillText("|", 49, y);
             x = 55;
             for (Vertex vertex : v.getAdjacencies()) {
-                displayGC.fillText(vertex.getVertexNumber() + "", x, y);
+                displayGC.fillText(vertex.getVertexValue() + "", x, y);
                 int incr = 0;
-                if (vertex.getVertexNumber() > 9 || vertex.getVertexNumber() < -9) {
+                if (vertex.getVertexValue().length() > 1 ) {
                     incr = 8;
                 }
                 displayGC.fillText(",", x + 10 + incr, y);
@@ -578,11 +611,11 @@ public class Visuals {
                 continue;
             }
             count++;//Keeps track of the actual vertex we are on
-            int num = temp.getVertexNumber();
-            displayGC.fillText(num + "", 30 + (count * 25), 15);//horizontal number
+            String value = temp.getVertexValue();
+            displayGC.fillText(value, 30 + (count * 25), 15);//horizontal number
             displayGC.fillText("|", 45 + (count * 25), 15);
 
-            displayGC.fillText(num + "", 10, 40 + (count * 25));//vertical numbers
+            displayGC.fillText(value, 10, 40 + (count * 25));//vertical numbers
             displayGC.fillText("____", 0, 43 + (count * 25));
             displayGC.fillText("|", 22, 40 + (count * 25));
 
@@ -709,7 +742,7 @@ public class Visuals {
     }
 
     private static void colourGraph(){
-        resetColors();
+        repaint();
         ArrayList<Pair<Vertex,Integer>> pairs=graphMethods.colourGraph();
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         Runnable colour=() ->{
@@ -723,10 +756,10 @@ public class Visuals {
 
                     gc.setFill(Color.BLACK);
                     gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-                    if ((pair.getKey().getVertexNumber() + "").length() == 1) {
-                        gc.fillText(pair.getKey().getVertexNumber() + "", pair.getKey().getxPos() + 15, pair.getKey().getyPos() + 25);
+                    if ((pair.getKey().getVertexValue()).length() == 1) {
+                        gc.fillText(pair.getKey().getVertexValue() , pair.getKey().getxPos() + 15, pair.getKey().getyPos() + 25);
                     } else {
-                        gc.fillText(pair.getKey().getVertexNumber() + "", pair.getKey().getxPos() + 10, pair.getKey().getyPos() + 25);
+                        gc.fillText(pair.getKey().getVertexValue(), pair.getKey().getxPos() + 10, pair.getKey().getyPos() + 25);
                     }
 
                     Pair<Vertex, Integer> tempPair=new Pair<>(pair.getKey(),-1);
@@ -743,27 +776,14 @@ public class Visuals {
 
 
             Platform.runLater(() -> {//Method of running on the UI thread
-                executorService.scheduleAtFixedRate(colour, 10, 1700, TimeUnit.MILLISECONDS);//every 1700 milliseconds these methods are run
+                executorService.scheduleAtFixedRate(colour, 1000, 1700, TimeUnit.MILLISECONDS);//every 1700 milliseconds these methods are run
 
             });
 
     }
 
-    protected static void resetColors(){
-        for(Vertex vertex:graph.getVertices()){
-            gc.setLineWidth(2.0D);
-            gc.setFill(Color.BURLYWOOD);
-            gc.fillOval(vertex.getxPos(),vertex.getyPos(),40,40);
 
-            gc.setFill(Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-            if ((vertex.getVertexNumber() + "").length() == 1) {
-                gc.fillText(vertex.getVertexNumber() + "", vertex.getxPos() + 15, vertex.getyPos() + 25);
-            } else {
-                gc.fillText(vertex.getVertexNumber() + "", vertex.getxPos() + 10, vertex.getyPos() + 25);
-            }
-        }
-    }
+
 
     private static Color getColour(int num){
         switch (num){
@@ -784,7 +804,7 @@ public class Visuals {
         }
     }
 
-    private static void repaint(){
+    protected static void repaint(){
         gc.setFill(Color.WHITE);
         gc.setLineWidth(4.0D);
         gc.fillRect(canvas.getLayoutX(), 0, canvasWidth, canvasHeight);
@@ -796,10 +816,10 @@ public class Visuals {
                     gc.fillOval(v.getxPos(), v.getyPos(), 40, 40);
                     gc.setFill(Color.BLACK);
                     gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-                    if ((v.getVertexNumber() + "").length() == 1) {
-                        gc.fillText(v.getVertexNumber() + "", v.getxPos() + 15, v.getyPos() + 25);
+                    if (v.getVertexValue().length() == 1) {
+                        gc.fillText(v.getVertexValue(), v.getxPos() + 15, v.getyPos() + 25);
                     } else {
-                        gc.fillText(v.getVertexNumber() + "", v.getxPos() + 10, v.getyPos() + 25);
+                        gc.fillText(v.getVertexValue(), v.getxPos() + 10, v.getyPos() + 25);
                     }
 
             }
@@ -818,8 +838,6 @@ public class Visuals {
             redrawWeightedEdge(w);
 
         }
-
-
 
     }
 
@@ -878,7 +896,7 @@ public class Visuals {
 
         displayGC.setFill(Color.BLACK);
         displayGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 16));
-        displayGC.fillText("Vertex |                                         Cost From Vertex "+graph.getRoot().getVertexNumber(), 2, 13);
+        displayGC.fillText("Vertex |                                         Cost From Vertex "+graph.getRoot().getVertexValue(), 2, 13);
         displayGC.fillText("_____________________________________________________________________________", 0, 14);
 
         int vertexNumber=0;
@@ -928,16 +946,16 @@ public class Visuals {
 
             generatedGC.setFill(Color.BLACK);
             generatedGC.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-            if ((v0.getVertexNumber() + "").length() == 1) {
-                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 15, v0.getyPos()+ 25);
+            if (v0.getVertexValue().length() == 1) {
+                generatedGC.fillText(v0.getVertexValue(), v0.getxPos() + 15, v0.getyPos()+ 25);
             } else {
-                generatedGC.fillText(v0.getVertexNumber() + "", v0.getxPos() + 10, v0.getyPos()+ 25);
+                generatedGC.fillText(v0.getVertexValue(), v0.getxPos() + 10, v0.getyPos()+ 25);
             }
 
-            if ((v1.getVertexNumber() + "").length() == 1) {
-                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 15, v1.getyPos()+ 25);
+            if (v1.getVertexValue().length() == 1) {
+                generatedGC.fillText(v1.getVertexValue(), v1.getxPos() + 15, v1.getyPos()+ 25);
             } else {
-                generatedGC.fillText(v1.getVertexNumber() + "", v1.getxPos() + 10, v1.getyPos()+ 25);
+                generatedGC.fillText(v1.getVertexValue(), v1.getxPos() + 10, v1.getyPos()+ 25);
             }
 
             pair0=weightedEdge.firstXY;
@@ -980,7 +998,7 @@ public class Visuals {
         }
         if(!getSelectedEdge(x,y).isWeightedEdge()){
             Edge selectedEdge=getSelectedEdge(x,y);
-            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexNumber()+" and "+ selectedEdge.vertexB.getVertexNumber()+
+            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexValue()+" and "+ selectedEdge.vertexB.getVertexValue()+
                     "\nPress yes to delete this edge");
 
             if(option==JOptionPane.YES_OPTION){
@@ -989,7 +1007,7 @@ public class Visuals {
             }
         }else{
             WeightedEdge selectedEdge= (WeightedEdge) getSelectedEdge(x,y);
-            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexNumber()+" and "+ selectedEdge.vertexB.getVertexNumber()+
+            int option=JOptionPane.showConfirmDialog(null,"You have selected the edge between "+ selectedEdge.vertexA.getVertexValue()+" and "+ selectedEdge.vertexB.getVertexValue()+
                     "\nPress yes to delete this edge");
 
             if(option==JOptionPane.YES_OPTION){
@@ -1030,13 +1048,14 @@ public class Visuals {
         return new Vertex(-1,-1,-1);
     }
 
-    private static void deleteVertex(double x, double y){
+    private void deleteVertex(double x, double y){
         Vertex vertex=getSelectedVertx(x,y);
         if(vertex.getxPos()==-1){
             JOptionPane.showMessageDialog(null,"Please select a vertex");
             return;
         }
-        int option=JOptionPane.showConfirmDialog(null,"You have selected Vertex "+ vertex.getVertexNumber()+
+        highlightVertex(vertex,Color.LIME);
+        int option=JOptionPane.showConfirmDialog(null,"You have selected Vertex "+ vertex.getVertexValue()+
                         "\nYou will delete all the edges connected to this Vertex"+
                 "\nPress yes to delete this Vertex");
 

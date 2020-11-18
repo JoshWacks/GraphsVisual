@@ -8,11 +8,19 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import sun.misc.Resource;
 
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class ConfigureScreen {
+
+    private static Text heading;
 
     private static Button addVertexBtn;
     private static Button addEdgeBtn;
@@ -25,6 +33,7 @@ public class ConfigureScreen {
 
     private static Button deleteEdgeBtn;
     private static Button deleteVertexBtn;
+    private static Button editVertexBtn;
     private static Button setRootBtn;
     private static Button setDestBtn;
 
@@ -42,13 +51,15 @@ public class ConfigureScreen {
         group=gr;
     }
 
-    public void addButtons(){
+    public void addButtons() throws IOException {
+        makeHeading();
         BackgroundFill backgroundFill=new BackgroundFill(Color.DARKCYAN,new CornerRadii(3),null);//The two types of backgrounds used
         BackgroundFill backgroundFillDel=new BackgroundFill(Color.TOMATO,new CornerRadii(3),null);
         Background background=new Background(backgroundFill);
         makeVertexBtn(background);
         makeEdgeBtn(background);
         makeWeightedEdgeBtn(background);
+        makeEditVertexBtn(background);
         makeViewListBtn();
         makeViewMatrixBtn();
 
@@ -63,6 +74,7 @@ public class ConfigureScreen {
         makeCombBox();
         makeSearchBtn();
 
+        group.getChildren().add(heading);
         group.getChildren().add(addVertexBtn);
         group.getChildren().add(addEdgeBtn);
         group.getChildren().add(viewListBtn);
@@ -74,6 +86,7 @@ public class ConfigureScreen {
         group.getChildren().add(deleteVertexBtn);
         group.getChildren().add(setRootBtn);
         group.getChildren().add(setDestBtn);
+        group.getChildren().add(editVertexBtn);
 
         group.getChildren().add(algorithmComboBox);
         group.getChildren().add(runAlgorithmBtn);
@@ -89,6 +102,13 @@ public class ConfigureScreen {
         return group;
     }
 
+    public void makeHeading() throws IOException {
+        heading=new Text(100,70,"Graphs Visualized");
+        heading.setId("HeadingText");
+;
+
+    }
+
     private void makeVertexBtn(Background background){
         addVertexBtn=new Button("Vertex");
         addVertexBtn.setTextFill(Color.BLACK);
@@ -101,7 +121,7 @@ public class ConfigureScreen {
 
         addVertexBtn.setLayoutX(5);
         addVertexBtn.setLayoutY(150);
-        addVertexBtn.setPrefWidth(100);
+        addVertexBtn.setPrefWidth(180);
         addVertexBtn.setPrefHeight(40);
 
         addVertexBtn.setOnMouseClicked(event -> {
@@ -113,6 +133,7 @@ public class ConfigureScreen {
                 toggleBtnOn(addVertexBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 toggleBtnOff(setRootBtn,Color.FORESTGREEN);
@@ -133,9 +154,9 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         addEdgeBtn.setTooltip(t);
 
-        addEdgeBtn.setLayoutX(125);
+        addEdgeBtn.setLayoutX(200);
         addEdgeBtn.setLayoutY(150);
-        addEdgeBtn.setPrefWidth(100);
+        addEdgeBtn.setPrefWidth(180);
         addEdgeBtn.setPrefHeight(40);
 
         addEdgeBtn.setOnMouseClicked(event -> {
@@ -147,6 +168,7 @@ public class ConfigureScreen {
                 toggleBtnOn(addEdgeBtn);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 toggleBtnOff(setRootBtn,Color.FORESTGREEN);
@@ -167,7 +189,7 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         addWeightedEdgeBtn.setTooltip(t);
 
-        addWeightedEdgeBtn.setLayoutX(245);
+        addWeightedEdgeBtn.setLayoutX(400);
         addWeightedEdgeBtn.setLayoutY(150);
         addWeightedEdgeBtn.setPrefWidth(200);
         addWeightedEdgeBtn.setPrefHeight(40);
@@ -181,14 +203,51 @@ public class ConfigureScreen {
                 toggleBtnOn(addWeightedEdgeBtn);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 toggleBtnOff(setRootBtn,Color.FORESTGREEN);
                 toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
-                btnSelected=3;
+
+                                btnSelected=3;
             }
         });
         buttons.add(addWeightedEdgeBtn);
+    }
+
+    private void makeEditVertexBtn(Background background){
+        editVertexBtn=new Button("Edit Vertex");
+        editVertexBtn.setTextFill(Color.BLACK);
+        editVertexBtn.setBackground(background);
+
+        editVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        Tooltip t = new Tooltip("To edit a vertex's value select the vertex and enter a valid value");
+        Tooltip.install(null, t);
+        editVertexBtn.setTooltip(t);
+
+        editVertexBtn.setLayoutX(610);
+        editVertexBtn.setLayoutY(150);
+        editVertexBtn.setPrefWidth(200);
+        editVertexBtn.setPrefHeight(40);
+
+        editVertexBtn.setOnMouseClicked(event -> {
+            if(btnSelected==8){
+                btnSelected=0;
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
+            }
+            else{
+                toggleBtnOn(editVertexBtn);
+                toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(deleteVertexBtn,Color.TOMATO);
+                toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
+                toggleBtnOff(setRootBtn,Color.FORESTGREEN);
+                toggleBtnOff(setDestBtn,Color.BLUEVIOLET);
+                btnSelected=8;
+            }
+        });
+        buttons.add(editVertexBtn);
     }
 
     private void makeRootBtn(){
@@ -217,6 +276,7 @@ public class ConfigureScreen {
                 toggleBtnOn(setRootBtn);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
@@ -253,6 +313,7 @@ public class ConfigureScreen {
                 toggleBtnOn(setDestBtn);
                 toggleBtnOff(setRootBtn,Color.FORESTGREEN);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
@@ -274,8 +335,8 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         deleteVertexBtn.setTooltip(t);
 
-        deleteVertexBtn.setLayoutX(465);
-        deleteVertexBtn.setLayoutY(150);
+        deleteVertexBtn.setLayoutX(475);
+        deleteVertexBtn.setLayoutY(90);
         deleteVertexBtn.setPrefWidth(170);
         deleteVertexBtn.setPrefHeight(40);
 
@@ -288,6 +349,7 @@ public class ConfigureScreen {
                 toggleBtnOn(deleteVertexBtn);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteEdgeBtn,Color.TOMATO);
                 toggleBtnOff(setRootBtn,Color.FORESTGREEN);
@@ -310,7 +372,7 @@ public class ConfigureScreen {
         deleteEdgeBtn.setTooltip(t);
 
         deleteEdgeBtn.setLayoutX(655);
-        deleteEdgeBtn.setLayoutY(150);
+        deleteEdgeBtn.setLayoutY(90);
         deleteEdgeBtn.setPrefWidth(160);
         deleteEdgeBtn.setPrefHeight(40);
 
@@ -322,6 +384,7 @@ public class ConfigureScreen {
             else{
                 toggleBtnOn(deleteEdgeBtn);
                 toggleBtnOff(addEdgeBtn,Color.DARKCYAN);
+                toggleBtnOff(editVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addVertexBtn,Color.DARKCYAN);
                 toggleBtnOff(addWeightedEdgeBtn,Color.DARKCYAN);
                 toggleBtnOff(deleteVertexBtn,Color.TOMATO);
