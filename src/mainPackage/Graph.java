@@ -93,11 +93,11 @@ public class Graph {
         int maxAdjcenciesPos=-1;
 
 
-        for(int i=0;i<vertices.size();i++){
-            if(getVertex(i).getColour()==-1&&getVertex(i).getDegree()>maxAdjacencies){
+        for(Vertex vertex:getVertices()){
+            if(vertex.getColour()==-1&& vertex.getDegree()>maxAdjacencies){
 
-                maxAdjacencies=getVertex(i).getDegree();
-                maxAdjcenciesPos=i;
+                maxAdjacencies=vertex.getDegree();
+                maxAdjcenciesPos=vertex.getVertexNumber();
             }
         }
         return  maxAdjcenciesPos;
@@ -105,7 +105,7 @@ public class Graph {
     }
 
     public boolean checkAllColoured(){
-        for(Vertex vertex:vertices){
+        for(Vertex vertex:getVertices()){
             if(vertex.getColour()==-1){
                 return false;
             }

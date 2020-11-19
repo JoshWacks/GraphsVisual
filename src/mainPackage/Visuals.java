@@ -65,30 +65,32 @@ public class Visuals {
 
     }
 
+    protected void drawVertex( Vertex vertex,GraphicsContext gc){
+        double x=vertex.getxPos();
+        double y=vertex.getyPos();
 
+        gc.setFill(Color.BURLYWOOD);
+        gc.setLineWidth(2.0D);
+        gc.fillOval(x, y, 40, 40);
+        gc.setFill(Color.BLACK);
+        gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
+
+        if (vertex.getVertexValue().length() == 1) {
+            gc.fillText(vertex.getVertexValue(), x + 15, y + 25);
+        } else {
+            gc.fillText(vertex.getVertexValue(), x + 10, y + 25);
+        }
+    }
     //Draws a vertex at a required x and y position
-    protected void drawVertex(double x, double y, GraphicsContext gc) {
+    protected void addVertex(double x, double y, GraphicsContext gc) {
 
         if (configureVisuals.validVertexPos(x, y)) {
-
-            gc.setFill(Color.BURLYWOOD);
-            gc.setLineWidth(2.0D);
-
-            gc.fillOval(x, y, 40, 40);
-            gc.setFill(Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-            if ((vertexCount + "").length() == 1) {
-                gc.fillText(vertexCount + "", x + 15, y + 25);
-            } else {
-                gc.fillText(vertexCount + "", x + 10, y + 25);
-            }
-
             Vertex vertex = new Vertex(vertexCount, x, y);
             vertex.setxCentre(x + 20);
             vertex.setyCentre(y + 20);
-            vertex.setVertexValue(vertexCount + "");//sets the default value of the vertexValue to its number
             graph.addVertex(vertex);
             vertexCount++;
+            drawVertex(vertex,gc);
         } else {
             JOptionPane.showMessageDialog(null, "Please choose a valid position on the board \nNot too close to the end of the board or another vertex");
         }
@@ -96,9 +98,7 @@ public class Visuals {
 
     //Highlights a specific vertex on the board
     protected void highlightVertex(Vertex v, Color color) {
-        if (v.isRoot() || v.isDest()) {
-            return;
-        }
+
         gc.setStroke(color);
         gc.setLineWidth(3.0D);
 
@@ -108,13 +108,18 @@ public class Visuals {
 
     //Unhighlight a specific vertex on the board
     protected void unhighlightVertex(Vertex v) {
-        if (v.isRoot() || v.isDest()) {
-            return;
-        }
+
         gc.setStroke(Color.WHITE);
 
         gc.strokeOval(v.getxPos(), v.getyPos(), 40, 40);
         gc.strokeOval(v.getxPos(), v.getyPos(), 41, 41);
+        if(v.isRoot()){
+            highlightVertex(v,Color.LIME);
+        }
+        if(v.isDest()){
+            highlightVertex(v,Color.BLUEVIOLET);
+        }
+
     }
 
     //Methods to edit the value of a vertex
@@ -218,7 +223,10 @@ public class Visuals {
 
     }
 
-    protected void drawEdge(Vertex[] arr) {
+
+
+
+    protected void addEdge(Vertex[] arr){
         Vertex v0 = arr[0];
         Vertex v1 = arr[1];
 
@@ -226,37 +234,49 @@ public class Visuals {
 
         if (v0.getxPos() < v1.getxPos() || v0.getxPos() == v1.getxPos()) {
             points = configureVisuals.findCorrectPoints(arr);
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(3.0D);
-            gc.strokeLine(points[0], points[1], points[2], points[3]);
+
 
         } else {
             Vertex[] newArr = new Vertex[2];
             newArr[0] = v1;
             newArr[1] = v0;
             points = configureVisuals.findCorrectPoints(newArr);
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(3.0D);
-            gc.strokeLine(points[0], points[1], points[2], points[3]);
+
         }
         Pair<Double, Double> pair1 = new Pair<>(points[0], points[1]);
         Pair<Double, Double> pair2 = new Pair<>(points[2], points[3]);
 
         Edge edge = new Edge(v0, v1, pair1, pair2);
         graph.addEdge(edge);
+
+        drawEdge(edge);
     }
 
-    protected void drawArcEdge(Vertex vertex) {
+    //Splits up the drawing and the creation of the edge
+    protected void drawEdge(Edge e) {
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3.0D);
+        gc.strokeLine(e.firstXY.getKey(), e.firstXY.getValue(), e.secondXY.getKey(), e.secondXY.getValue());
+    }
+
+    protected void drawArcEdge(Edge edge) {
+        Vertex vertex=edge.getVertexA();
         double cx = vertex.getxCentre();
         double cy = vertex.getyCentre();
         gc.setStroke(Color.BLACK);
 
-
         gc.strokeArc(cx, cy + 2, 40, 35, 180, 270, ArcType.OPEN);
+
+    }
+
+    //makes and draws the Arc edge
+    protected void addArcEdge(Vertex vertex){
         Pair<Double, Double> pair1 = new Pair<>(vertex.getxPos(), vertex.getyPos());
         Pair<Double, Double> pair2 = new Pair<>(vertex.getxPos(), vertex.getyPos());
         Edge edge = new Edge(vertex, vertex, pair1, pair2);
         graph.addEdge(edge);
+
+        drawArcEdge(edge);
     }
 
     protected void drawWeightedArcEdge(Vertex vertex) {
@@ -298,8 +318,8 @@ public class Visuals {
         weight = -1;
     }
 
-    protected void drawWeightedEdge(Vertex[] arr) {
-
+    //gets the value and creates the weightedEdge
+    protected void addWeightedEdge(Vertex[] arr){
         String temp = "";
         while (weight == -1) {
             temp = JOptionPane.showInputDialog("Please enter a weight for this edge");
@@ -312,7 +332,6 @@ public class Visuals {
             }
 
         }
-
         Vertex v0 = arr[0];
         Vertex v1 = arr[1];
         WeightedEdge weightedEdge;
@@ -330,33 +349,37 @@ public class Visuals {
             newArr = arr;
         }
 
-        gc.setStroke(Color.BLACK);
         points = configureVisuals.findCorrectPoints(newArr);
         Pair<Double, Double> pair1 = new Pair<>(points[0], points[1]);
         Pair<Double, Double> pair2 = new Pair<>(points[2], points[3]);
 
         weightedEdge = new WeightedEdge(v0, v1, weight, pair1, pair2);
 
-        double[] midpoint = configureVisuals.getMidpoint(v0, v1);
+        double[] midpoint = ConfigureVisuals.getMidpoint(v0, v1);
         weightedEdge.setMidPoint(midpoint);
         graph.addWeightedEdge(weightedEdge);
-        gc.setLineWidth(3.0D);
-        gc.strokeLine(points[0], points[1], points[2], points[3]);
+        weight=-1;
+        drawWeightedEdge(weightedEdge);
+    }
 
+    protected static void drawWeightedEdge(WeightedEdge weightedEdge) {
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3.0D);
+        gc.strokeLine(weightedEdge.firstXY.getKey(), weightedEdge.firstXY.getValue(), weightedEdge.secondXY.getKey(), weightedEdge.secondXY.getValue());
 
         gc.setFill(Color.BLACK);
         gc.setLineWidth(2.0D);
-        gc.fillRect(midpoint[0] - 15, midpoint[1] - 15, 35, 35);
+        gc.fillRect(weightedEdge.getMidPoint()[0] - 15, weightedEdge.getMidPoint()[1] - 15, 35, 35);
 
         gc.setFill(Color.WHITE);
         int incr;
+        String temp = weightedEdge.getWeight() + "";
         if (temp.length() == 1) {
             incr = 3;
         } else {
             incr = 8;
         }
-        gc.fillText(weight + "", midpoint[0] - incr, midpoint[1] + 7);
-        weight = -1;
+        gc.fillText(weightedEdge.getWeight() + "", weightedEdge.getMidPoint()[0] - incr, weightedEdge.getMidPoint()[1] + 7);
 
 
     }
@@ -458,8 +481,8 @@ public class Visuals {
     }
 
 
-    public static void callAlg() {
-        ConfigureVisuals.callAlgMethod();
+    public void callAlg() {
+        configureVisuals.callAlgMethod();
     }
 
     protected static void checkCompleted() {
@@ -491,7 +514,7 @@ public class Visuals {
     }
 
 
-    protected static void colourGraph() {
+    protected void colourGraph() {
         repaint();
         ArrayList<Pair<Vertex, Integer>> pairs = graphMethods.colourGraph();
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -533,64 +556,37 @@ public class Visuals {
     }
 
 
-    protected static void repaint() {
+    protected void repaint() {
         gc.setFill(Color.WHITE);
         gc.setLineWidth(4.0D);
         gc.fillRect(canvas.getLayoutX(), 0, canvasWidth, canvasHeight);
 
         for (Vertex v : graph.getVertices()) {
-            gc.setFill(Color.BURLYWOOD);
-            gc.setLineWidth(2.0D);
-
-            gc.fillOval(v.getxPos(), v.getyPos(), 40, 40);
-            gc.setFill(Color.BLACK);
-            gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-            if (v.getVertexValue().length() == 1) {
-                gc.fillText(v.getVertexValue(), v.getxPos() + 15, v.getyPos() + 25);
-            } else {
-                gc.fillText(v.getVertexValue(), v.getxPos() + 10, v.getyPos() + 25);
-            }
-
+           drawVertex(v,gc);
         }
 
         for (Edge e : graph.getEdges()) {
-
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(3.0D);
-            gc.strokeLine(e.firstXY.getKey(), e.firstXY.getValue(), e.secondXY.getKey(), e.secondXY.getValue());
-
-
+            if(e.isArcEdge()){
+                drawArcEdge(e);
+            }
+           drawEdge(e);
         }
 
         for (WeightedEdge w : graph.getWeightedEdges()) {
 
-            redrawWeightedEdge(w);
+            drawWeightedEdge(w);
 
+        }
+        if(graph.getDestination()!=null) {
+            highlightVertex(graph.getDestination(), Color.BLUEVIOLET);
+        }
+
+        if(graph.getRoot()!=null){
+            highlightVertex(graph.getRoot(), Color.LIME);
         }
 
     }
 
-    protected static void redrawWeightedEdge(WeightedEdge weightedEdge) {
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(3.0D);
-        gc.strokeLine(weightedEdge.firstXY.getKey(), weightedEdge.firstXY.getValue(), weightedEdge.secondXY.getKey(), weightedEdge.secondXY.getValue());
-
-        gc.setFill(Color.BLACK);
-        gc.setLineWidth(2.0D);
-        gc.fillRect(weightedEdge.getMidPoint()[0] - 15, weightedEdge.getMidPoint()[1] - 15, 35, 35);
-
-        gc.setFill(Color.WHITE);
-        int incr;
-        String temp = weightedEdge.getWeight() + "";
-        if (temp.length() == 1) {
-            incr = 3;
-        } else {
-            incr = 8;
-        }
-        gc.fillText(weightedEdge.getWeight() + "", weightedEdge.getMidPoint()[0] - incr, weightedEdge.getMidPoint()[1] + 7);
-
-
-    }
 
 
     protected static void makeShortestPathTree() {
@@ -643,7 +639,7 @@ public class Visuals {
         Stage stage = new Stage();
         stage.setX(0);//set it on the top left of the screen
         stage.setY(0);
-        stage.setTitle("View Created Graph");
+        stage.setTitle("View Created "+ConfigureScreen.getAlgorithmSelected()+" Graph");
         Group group = new Group();
         stage.setResizable(false);
 
@@ -717,7 +713,7 @@ public class Visuals {
     }
 
 
-    protected static void deleteEdge(double x, double y) {
+    protected void deleteEdge(double x, double y) {
         if (ConfigureVisuals.getSelectedEdge(x, y).vertexA.getVertexNumber() == -1) {
             JOptionPane.showMessageDialog(null, "Please make sure to select an edge");
             return;
@@ -756,6 +752,16 @@ public class Visuals {
                 "\nPress yes to delete this Vertex");
 
         if (option == JOptionPane.YES_OPTION) {
+
+            if(vertex.isDest()){
+                vertex.setDest(false);
+                graph.setDestination(null);
+            }
+
+            if(vertex.isRoot()){
+                vertex.setRoot(false);
+                graph.setRoot(null);
+            }//If this vertex was the root/ destination we ned to set those now to null
             graph.deleteVertex(vertex);
             repaint();
         }

@@ -18,6 +18,7 @@ public class Vertex {
 
     public Vertex(int num,double x,double y){
         vertexNumber=num;
+        vertexValue=num+"";//sets the default value of the vertex to its number in the case they change it later
         xPos=x;
         yPos=y;
         colour=-1;//Sets the colour of that vertex to -1 representing uncoloured
@@ -101,7 +102,7 @@ public class Vertex {
     }
 
     public boolean liesInVertex(double x, double y){
-        return xCentre - 22 < x && xCentre + 22 > x && yCentre - 22 < y && yCentre + 22 > y;//Tells us if the selected point is within the vertex
+        return xCentre - 24 < x && xCentre + 24 > x && yCentre - 24 < y && yCentre + 24 > y;//Tells us if the selected point is within the vertex
     }
 
     public String getVertexValue() {

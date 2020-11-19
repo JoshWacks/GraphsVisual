@@ -8,14 +8,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import sun.misc.Resource;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ConfigureScreen {
@@ -44,11 +40,13 @@ public class ConfigureScreen {
     private static Button searchBtn;
 
     private static ArrayList<Button>buttons=new ArrayList<>();
+    private static Visuals visuals;
 
     private static int btnSelected=0;
 
     public ConfigureScreen(Group gr){
         group=gr;
+        visuals=new Visuals();
     }
 
     public void addButtons() throws IOException {
@@ -438,65 +436,6 @@ public class ConfigureScreen {
         buttons.add(viewMatrixBtn);
     }
 
-//    private void makeCompleteBtn(){
-//        checkCompleteBtn=new Button("Complete?");
-//        checkCompleteBtn.setTextFill(Color.BLACK);
-//        BackgroundFill backgroundFill=new BackgroundFill(Color.CORAL,new CornerRadii(3),null);
-//        Background background=new Background(backgroundFill);
-//        checkCompleteBtn.setBackground(background);
-//
-//        checkCompleteBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-//        Tooltip t = new Tooltip("Click here to check if the graph is a complete graph");
-//        Tooltip.install(null, t);
-//        checkCompleteBtn.setTooltip(t);
-//
-//        checkCompleteBtn.setLayoutX(825);
-//        checkCompleteBtn.setLayoutY(500);
-//        checkCompleteBtn.setPrefSize(130,30);
-//
-//        checkCompleteBtn.setOnMouseClicked(event -> Visuals.checkCompleted());
-//
-//    }
-
-//    private void makeConnectedBtn(){
-//        checkConnectedBtn=new Button("Connected?");
-//        checkConnectedBtn.setTextFill(Color.BLACK);
-//        BackgroundFill backgroundFill=new BackgroundFill(Color.DARKKHAKI,new CornerRadii(3),null);
-//        Background background=new Background(backgroundFill);
-//        checkConnectedBtn.setBackground(background);
-//
-//        checkConnectedBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-//        Tooltip t = new Tooltip("Click here to check if the graph is a connected graph");
-//        Tooltip.install(null, t);
-//        checkConnectedBtn.setTooltip(t);
-//
-//        checkConnectedBtn.setLayoutX(825);
-//        checkConnectedBtn.setLayoutY(550);
-//        checkConnectedBtn.setPrefSize(130,30);
-//
-//        checkConnectedBtn.setOnMouseClicked(event -> Visuals.checkConnected());
-//
-//    }
-//
-//    private void makeMWSPBtn(){
-//        getMWSPBtn=new Button("Get Minimum Weighted Spanning Tree");
-//        getMWSPBtn.setTextFill(Color.BLACK);
-//        BackgroundFill backgroundFill=new BackgroundFill(Color.DODGERBLUE,new CornerRadii(3),null);
-//        Background background=new Background(backgroundFill);
-//        getMWSPBtn.setBackground(background);
-//
-//        getMWSPBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 20));
-//        Tooltip t = new Tooltip("Click here to make the minimum weighted spanning tree of this graph if possible");
-//        Tooltip.install(null, t);
-//        getMWSPBtn.setTooltip(t);
-//
-//        getMWSPBtn.setLayoutX(985);
-//        getMWSPBtn.setLayoutY(500);
-//        getMWSPBtn.setPrefSize(370,30);
-//
-//        getMWSPBtn.setOnMouseClicked(event -> Visuals.makeMWST());
-//
-//    }
 
     private void makeAlgBtn(){
         runAlgorithmBtn=new Button("Run Algorithm");
@@ -515,7 +454,7 @@ public class ConfigureScreen {
         runAlgorithmBtn.setLayoutY(493);
         runAlgorithmBtn.setPrefSize(150,40);
 
-        runAlgorithmBtn.setOnMouseClicked(event -> Visuals.callAlg());
+        runAlgorithmBtn.setOnMouseClicked(event -> visuals.callAlg());
 
     }
 

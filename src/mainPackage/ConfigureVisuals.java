@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 import javax.swing.*;
-import java.awt.*;
+
 import java.util.ArrayList;
 
 public class ConfigureVisuals extends Visuals{
@@ -21,7 +21,7 @@ public class ConfigureVisuals extends Visuals{
                 JOptionPane.showMessageDialog(null, "Please select an option from the draw menu first");
                 return;
             case 1:
-                drawVertex(x - 5, y - 5, gc);//we offset it by 5 to find the a more precise location of the pointer
+                addVertex(x - 5, y - 5, gc);//we offset it by 5 to find the a more precise location of the pointer
                 return;
             case 4:
                 deleteVertex(x,y);
@@ -61,15 +61,15 @@ public class ConfigureVisuals extends Visuals{
 
                     if (ConfigureScreen.getBtnSelected() == 2) {//2 stands for normal edge
                         if (selectedVertices[0].equals(selectedVertices[1])) {
-                            drawArcEdge(selectedVertices[0]);
+                            addArcEdge(selectedVertices[0]);
                         } else {
-                            drawEdge(selectedVertices);
+                            addEdge(selectedVertices);
                         }
                     } else if(ConfigureScreen.getBtnSelected() == 3) {//3 is a weighted
                         if (selectedVertices[0].equals(selectedVertices[1])) {
                             drawWeightedArcEdge(selectedVertices[0]);
                         } else {
-                            drawWeightedEdge(selectedVertices);
+                            addWeightedEdge(selectedVertices);
                         }
 
                     }
@@ -114,6 +114,24 @@ public class ConfigureVisuals extends Visuals{
 
         return new Vertex(-1, -1, -1);
 
+    }
+
+    protected static Edge getSelectedEdge(double x,double y){
+        for(Edge edge:graph.getEdges()){
+            if(edge.liesOnEdge(x,y)){
+                return edge;
+            }
+        }
+
+        for (WeightedEdge weightedEdge:graph.getWeightedEdges()){
+
+            if(weightedEdge.liesOnEdge(x,y)){
+                return weightedEdge;
+            }
+        }
+        Vertex vertex=new Vertex(-1,-1,-1);
+
+        return new Edge(vertex,vertex);
     }
 
     //method to find where the edge should be drawn between two vertices
@@ -234,7 +252,7 @@ public class ConfigureVisuals extends Visuals{
         return results;
     }
     //Utility function to call the correct algorithm
-    protected static void callAlgMethod(){
+    protected  void callAlgMethod(){
         switch (ConfigureScreen.getAlgorithmSelected()){
             case "Select An Algorithm":
                 JOptionPane.showMessageDialog(null,"Please Select An Algorithm");
@@ -312,23 +330,7 @@ public class ConfigureVisuals extends Visuals{
         }
     }
 
-    protected static Edge getSelectedEdge(double x,double y){
-        for(Edge edge:graph.getEdges()){
-            if(edge.liesOnEdge(x,y)){
-                return edge;
-            }
-        }
 
-        for (WeightedEdge weightedEdge:graph.getWeightedEdges()){
-
-            if(weightedEdge.liesOnEdge(x,y)){
-                return weightedEdge;
-            }
-        }
-        Vertex vertex=new Vertex(-1,-1,-1);
-
-        return new Edge(vertex,vertex);
-    }
 
 
 

@@ -46,7 +46,7 @@ public class Edge {
         double diff=y-getC();
         double quotient=diff/getGradient();
 
-        return sum - 9 < y && y< sum+9 || quotient-9<x && x<quotient+9;
+        return sum - 10 < y && y< sum+10 || quotient-10<x && x<quotient+10;
 
     }
 
@@ -79,6 +79,11 @@ public class Edge {
 
         return (vertexA.getVertexNumber()==a && vertexB.getVertexNumber()==b || vertexA.getVertexNumber()==b && vertexB.getVertexNumber()==a);
 
+    }
+
+    //Method to check if that edge is an arc edge
+    public boolean isArcEdge(){
+        return vertexA.equals(vertexB);
     }
 
 
