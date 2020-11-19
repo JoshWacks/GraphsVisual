@@ -101,7 +101,7 @@ public class Vertex {
     }
 
     public boolean liesInVertex(double x, double y){
-        return xCentre - 20 < x && xCentre + x > x && yCentre - 20 < y && yCentre + 20 > y;//Tells us if the selected point is within the vertex
+        return xCentre - 22 < x && xCentre + 22 > x && yCentre - 22 < y && yCentre + 22 > y;//Tells us if the selected point is within the vertex
     }
 
     public String getVertexValue() {

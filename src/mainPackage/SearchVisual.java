@@ -47,6 +47,7 @@ public class SearchVisual extends Visuals {
     }
 
     private void showSearch( ArrayList<Vertex> visitedOrder){
+        repaint();//clears the current colours so we can show the order
 
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         final int[] pos = {0};//keeps track of where we are in the arrayList
