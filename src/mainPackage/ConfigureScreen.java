@@ -1,5 +1,6 @@
 package mainPackage;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -30,6 +31,7 @@ public class ConfigureScreen {
     private static Button deleteEdgeBtn;
     private static Button deleteVertexBtn;
     private static Button editVertexBtn;
+    private static Button clearAllBtn;
     private static Button setRootBtn;
     private static Button setDestBtn;
 
@@ -71,6 +73,7 @@ public class ConfigureScreen {
 
         makeCombBox();
         makeSearchBtn();
+        makeClearAllBtn(new Background(backgroundFillDel));
 
         group.getChildren().add(heading);
         group.getChildren().add(addVertexBtn);
@@ -91,6 +94,7 @@ public class ConfigureScreen {
 
         group.getChildren().add(searchBtn);
         group.getChildren().add(searchComboBox);
+        group.getChildren().add(clearAllBtn);
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -256,13 +260,15 @@ public class ConfigureScreen {
         setRootBtn.setBackground(background);
 
         setRootBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+
+        setRootBtn.setAlignment(Pos.CENTER_LEFT);
         Tooltip t = new Tooltip("To indicate the root click here then on the vertex you would like to be the root");
         Tooltip.install(null, t);
         setRootBtn.setTooltip(t);
 
         setRootBtn.setLayoutX(5);
         setRootBtn.setLayoutY(90);
-        setRootBtn.setPrefWidth(200);
+        setRootBtn.setPrefWidth(165);
         setRootBtn.setPrefHeight(40);
 
         setRootBtn.setOnMouseClicked(event -> {
@@ -293,13 +299,14 @@ public class ConfigureScreen {
         setDestBtn.setBackground(background);
 
         setDestBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        setDestBtn.setAlignment(Pos.CENTER_LEFT);
         Tooltip t = new Tooltip("To indicate the destination click here then on the vertex you would like to be the destination");
         Tooltip.install(null, t);
         setDestBtn.setTooltip(t);
 
-        setDestBtn.setLayoutX(220);
+        setDestBtn.setLayoutX(200);
         setDestBtn.setLayoutY(90);
-        setDestBtn.setPrefWidth(240);
+        setDestBtn.setPrefWidth(230);
         setDestBtn.setPrefHeight(40);
 
         setDestBtn.setOnMouseClicked(event -> {
@@ -329,11 +336,12 @@ public class ConfigureScreen {
         deleteVertexBtn.setBackground(background);
 
         deleteVertexBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        deleteVertexBtn.setAlignment(Pos.CENTER_LEFT);
         Tooltip t = new Tooltip("To delete an vertex click here then select an vertex \nAll connected edges will also be deleted");
         Tooltip.install(null, t);
         deleteVertexBtn.setTooltip(t);
 
-        deleteVertexBtn.setLayoutX(475);
+        deleteVertexBtn.setLayoutX(460);
         deleteVertexBtn.setLayoutY(90);
         deleteVertexBtn.setPrefWidth(170);
         deleteVertexBtn.setPrefHeight(40);
@@ -365,13 +373,14 @@ public class ConfigureScreen {
         deleteEdgeBtn.setBackground(background);
 
         deleteEdgeBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        deleteEdgeBtn.setAlignment(Pos.CENTER_LEFT);
         Tooltip t = new Tooltip("To delete an edge click here then select an edge");
         Tooltip.install(null, t);
         deleteEdgeBtn.setTooltip(t);
 
-        deleteEdgeBtn.setLayoutX(655);
+        deleteEdgeBtn.setLayoutX(660);
         deleteEdgeBtn.setLayoutY(90);
-        deleteEdgeBtn.setPrefWidth(160);
+        deleteEdgeBtn.setPrefWidth(150);
         deleteEdgeBtn.setPrefHeight(40);
 
         deleteEdgeBtn.setOnMouseClicked(event -> {
@@ -508,6 +517,29 @@ public class ConfigureScreen {
 
         searchComboBox.setPrefSize(350,30);
 
+
+    }
+
+    private void makeClearAllBtn(Background background){
+        clearAllBtn=new Button("CLEAR ALL");
+        clearAllBtn.setTextFill(Color.BLACK);
+        clearAllBtn.setBackground(background);
+
+        clearAllBtn.setFont(javafx.scene.text.Font.font(Font.SERIF, 24));
+        clearAllBtn.setAlignment(Pos.CENTER);
+        Tooltip t = new Tooltip("Press here if you would like to clear all from the canvas");
+        Tooltip.install(null, t);
+        clearAllBtn.setTooltip(t);
+
+        clearAllBtn.setLayoutX(1130);
+        clearAllBtn.setLayoutY(680);
+        clearAllBtn.setPrefWidth(200);
+        clearAllBtn.setPrefHeight(40);
+
+        clearAllBtn.setOnMouseClicked(event -> {
+
+        });
+        buttons.add(clearAllBtn);
 
     }
 

@@ -279,12 +279,8 @@ public class Visuals {
         drawArcEdge(edge);
     }
 
-    protected void drawWeightedArcEdge(Vertex vertex) {
-        double cx = vertex.getxCentre();
-        double cy = vertex.getyCentre();
-        gc.setStroke(Color.BLACK);
-        gc.strokeArc(cx, cy + 2, 40, 35, 180, 270, ArcType.OPEN);
-        String temp = "";
+    protected void addWeightedArcEdge(Vertex vertex){
+        String temp ;
         while (weight == -1) {
             temp = JOptionPane.showInputDialog("Please enter a weight for this edge");
 
@@ -297,25 +293,39 @@ public class Visuals {
 
         }
 
+        Pair<Double, Double> pair1 = new Pair<>(vertex.getxPos(), vertex.getyPos());
+
+        WeightedEdge weightedEdge = new WeightedEdge(vertex, vertex, weight, pair1, pair1);
+        graph.addWeightedEdge(weightedEdge);
+
+        drawWeightedArcEdge(weightedEdge);//after creating the weighted arc edge we can draw it
+
+        weight = -1;
+    }
+
+    protected void drawWeightedArcEdge(WeightedEdge weightedEdge) {
+        Vertex vertex=weightedEdge.getVertexA();
+        double cx = vertex.getxCentre();
+        double cy = vertex.getyCentre();
+        gc.setStroke(Color.BLACK);
+        gc.strokeArc(cx, cy + 2, 40, 35, 180, 270, ArcType.OPEN);
+
+
         gc.setFill(Color.BLACK);
         gc.setLineWidth(2.0D);
         gc.fillRect(cx + 15, cy + 18, 25, 25);
 
         gc.setFill(Color.WHITE);
         int incr;
-        if (temp.length() == 1) {
+        if (weightedEdge.getWeight()+"".length() == 1) {
             incr = 3;
         } else {
             incr = 8;
         }
         gc.setFont(javafx.scene.text.Font.font(Font.SERIF, 17));
-        gc.fillText(weight + "", cx + 25 - incr, cy + 28 + 7);
+        gc.fillText(weightedEdge.getWeight() + "", cx + 25 - incr, cy + 28 + 7);
 
-        Pair<Double, Double> pair1 = new Pair<>(vertex.getxPos(), vertex.getyPos());
 
-        WeightedEdge weightedEdge = new WeightedEdge(vertex, vertex, weight, pair1, pair1);
-        graph.addWeightedEdge(weightedEdge);
-        weight = -1;
     }
 
     //gets the value and creates the weightedEdge
@@ -568,13 +578,17 @@ public class Visuals {
         for (Edge e : graph.getEdges()) {
             if(e.isArcEdge()){
                 drawArcEdge(e);
+            }else {
+                drawEdge(e);
             }
-           drawEdge(e);
         }
 
         for (WeightedEdge w : graph.getWeightedEdges()) {
-
-            drawWeightedEdge(w);
+            if(w.isArcEdge()){
+                drawWeightedArcEdge(w);
+            }else {
+                drawWeightedEdge(w);
+            }
 
         }
         if(graph.getDestination()!=null) {

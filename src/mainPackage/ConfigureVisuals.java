@@ -60,14 +60,14 @@ public class ConfigureVisuals extends Visuals{
 
 
                     if (ConfigureScreen.getBtnSelected() == 2) {//2 stands for normal edge
-                        if (selectedVertices[0].equals(selectedVertices[1])) {
+                        if (selectedVertices[0].equals(selectedVertices[1])) {//it is the same vertex so it is an arc edge
                             addArcEdge(selectedVertices[0]);
                         } else {
                             addEdge(selectedVertices);
                         }
                     } else if(ConfigureScreen.getBtnSelected() == 3) {//3 is a weighted
-                        if (selectedVertices[0].equals(selectedVertices[1])) {
-                            drawWeightedArcEdge(selectedVertices[0]);
+                        if (selectedVertices[0].equals(selectedVertices[1])) {//it is the same vertex so it is a weighted arc edge
+                            addWeightedArcEdge(selectedVertices[0]);
                         } else {
                             addWeightedEdge(selectedVertices);
                         }
