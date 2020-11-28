@@ -184,5 +184,14 @@ public class Graph {
         }
         return null;
     }
+
+    //method to reset the board and all the stored values
+    public static void clearAll(){
+        root=null;
+        destination=null;
+        vertices=new ArrayList<>();
+        weightedEdges =new ArrayList<>();
+        edges=new ArrayList<>();
+    }
 }
 

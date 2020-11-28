@@ -12,8 +12,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 //TODO add a button to delete arc edges
-//TODO when re-drawing arc edges it re-draws incorrectly
-//TODO Add a clear board button
 //TODO reorganise visuals into subclasses
 
 
@@ -33,6 +31,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static Visuals visuals;
     private static ConfigureScreen cs;
+    private static Scene scene;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -50,18 +49,20 @@ public class Main extends Application {
         canvas.setLayoutY(200);
         group.getChildren().add(canvas);
 
-        Canvas displayCanvas=new Canvas(600,400);//The canvas which is meant for display purposes only
+        Canvas displayCanvas=new Canvas(600,500);//The canvas which is meant for display purposes only
         displayCanvas.setLayoutX(820);
-        displayCanvas.setLayoutY(80);
+        displayCanvas.setLayoutY(100);
         group.getChildren().add(displayCanvas);
 
 
-        cs=new ConfigureScreen(group);
+        cs=new ConfigureScreen(group,scene);
         cs.addButtons();//Adds all the buttons to the screen
 
-        Scene scene = new Scene(group, screenBounds.getWidth()-20, screenBounds.getHeight()-30);
+        scene = new Scene(group, screenBounds.getWidth()-20, screenBounds.getHeight()-30);
         scene.setFill(Color.BLACK);
+
         scene.getStylesheets().add(this.getClass().getResource("ScreenStyle").toExternalForm());
+        scene.setOnMouseMoved(event -> cs.menuVisible(event));
         primaryStage.setScene(scene);
         primaryStage.show();
 

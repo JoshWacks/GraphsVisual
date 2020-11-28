@@ -86,14 +86,14 @@ public class ConfigureVisuals extends Visuals{
     //Ensures the selected vertex is in a valid position
     protected boolean validVertexPos(double x, double y) {
         Double tempX, tempY;
-        if ((y + 40) > canvasHeight || (x - 40) < 0 || (x + 40) > canvasWidth || (y - 40) < 0) {//basic bounds checking
+        if ((y + 20) > canvasHeight || (x - 20) < 0 || (x + 20) > canvasWidth || (y - 20) < 0) {//basic bounds checking
             return false;
         }
 
         for (Vertex v : graph.getVertices()) {
             tempX = v.getxPos();
             tempY = v.getyPos();
-            if ((tempX - 40 < x && x < tempX + 40) && (tempY - 40 < y && y < tempY + 40)) {
+            if ((tempX - 20 < x && x < tempX + 20) && (tempY - 20 < y && y < tempY + 20)) {
                 return false;
             }
         }

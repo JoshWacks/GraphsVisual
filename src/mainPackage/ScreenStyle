@@ -4,3 +4,23 @@
        -fx-stroke: black;
        -fx-stroke-width: 1;
 }
+
+#menuBar{
+    -fx-font: 15px Tahoma;
+    -fx-background-color : #000000;
+}
+
+#menu{
+    -fx-font: 15px Tahoma;
+    -fx-fill:#0000ff;
+    -fx-stroke:#0000ff;
+    -fx-color:#0000ff;
+    -fx-background-color : #000000;
+
+}
+
+#menuItem{
+    -fx-font: 15px Tahoma;
+     -fx-background-color : #000000;
+     color:black;
+}

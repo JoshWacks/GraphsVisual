@@ -2,9 +2,11 @@ package mainPackage;
 
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -21,7 +23,8 @@ public class ConfigureScreen {
 
     private static Button addVertexBtn;
     private static Button addEdgeBtn;
-    private static Group group;
+    protected static Group group;
+    protected static Scene scene;
     private static Button viewListBtn;
     private static Button viewMatrixBtn;
 
@@ -46,7 +49,14 @@ public class ConfigureScreen {
 
     private static int btnSelected=0;
 
-    public ConfigureScreen(Group gr){
+    public ConfigureScreen(){
+
+    }
+
+
+    public ConfigureScreen(Group gr, Scene scene){
+        ConfigureScreen.scene =scene;
+
         group=gr;
         visuals=new Visuals();
     }
@@ -73,7 +83,7 @@ public class ConfigureScreen {
 
         makeCombBox();
         makeSearchBtn();
-        makeClearAllBtn(new Background(backgroundFillDel));
+        makeClearAllBtn();
 
         group.getChildren().add(heading);
         group.getChildren().add(addVertexBtn);
@@ -95,6 +105,8 @@ public class ConfigureScreen {
         group.getChildren().add(searchBtn);
         group.getChildren().add(searchComboBox);
         group.getChildren().add(clearAllBtn);
+
+        ConfigureMenu.setMenu();
     }
     public static int getBtnSelected(){
         return btnSelected;
@@ -416,7 +428,7 @@ public class ConfigureScreen {
         viewListBtn.setTooltip(t);
 
         viewListBtn.setLayoutX(1100);
-        viewListBtn.setLayoutY(20);
+        viewListBtn.setLayoutY(40);
         viewListBtn.setPrefWidth(250);
         viewListBtn.setPrefHeight(30);
 
@@ -437,7 +449,7 @@ public class ConfigureScreen {
         viewMatrixBtn.setTooltip(t);
 
         viewMatrixBtn.setLayoutX(850);
-        viewMatrixBtn.setLayoutY(20);
+        viewMatrixBtn.setLayoutY(40);
         viewMatrixBtn.setPrefWidth(200);
         viewMatrixBtn.setPrefHeight(30);
 
@@ -460,7 +472,7 @@ public class ConfigureScreen {
 
 
         runAlgorithmBtn.setLayoutX(1200);
-        runAlgorithmBtn.setLayoutY(493);
+        runAlgorithmBtn.setLayoutY(623);
         runAlgorithmBtn.setPrefSize(150,40);
 
         runAlgorithmBtn.setOnMouseClicked(event -> visuals.callAlg());
@@ -475,7 +487,7 @@ public class ConfigureScreen {
         algorithmComboBox.setValue("Select An Algorithm");
 
         algorithmComboBox.setLayoutX(822);
-        algorithmComboBox.setLayoutY(490);
+        algorithmComboBox.setLayoutY(620);
 
         algorithmComboBox.setPrefSize(350,30);
 
@@ -495,7 +507,7 @@ public class ConfigureScreen {
         searchBtn.setTooltip(t);
 
         searchBtn.setLayoutX(1200);
-        searchBtn.setLayoutY(553);
+        searchBtn.setLayoutY(683);
         searchBtn.setPrefWidth(150);
         searchBtn.setPrefHeight(40);
 
@@ -513,14 +525,16 @@ public class ConfigureScreen {
         searchComboBox.setValue("Select A Search");
 
         searchComboBox.setLayoutX(822);
-        searchComboBox.setLayoutY(550);
+        searchComboBox.setLayoutY(680);
 
         searchComboBox.setPrefSize(350,30);
 
 
     }
 
-    private void makeClearAllBtn(Background background){
+    private void makeClearAllBtn(){
+        BackgroundFill backgroundFill=new BackgroundFill(Color.CRIMSON,new CornerRadii(3),null);
+        Background background=new Background(backgroundFill);
         clearAllBtn=new Button("CLEAR ALL");
         clearAllBtn.setTextFill(Color.BLACK);
         clearAllBtn.setBackground(background);
@@ -531,13 +545,17 @@ public class ConfigureScreen {
         Tooltip.install(null, t);
         clearAllBtn.setTooltip(t);
 
-        clearAllBtn.setLayoutX(1130);
-        clearAllBtn.setLayoutY(680);
-        clearAllBtn.setPrefWidth(200);
-        clearAllBtn.setPrefHeight(40);
+        clearAllBtn.setLayoutX(654);
+        clearAllBtn.setLayoutY(200);
+        clearAllBtn.setPrefWidth(165);
+        clearAllBtn.setPrefHeight(35);
 
         clearAllBtn.setOnMouseClicked(event -> {
-
+            try {
+                Visuals.clearAll();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
         });
         buttons.add(clearAllBtn);
 
@@ -566,4 +584,8 @@ public class ConfigureScreen {
     }
 
     public static String getAlgorithmSelected(){return (String) algorithmComboBox.getValue();}
+
+    public void menuVisible(MouseEvent event){
+        ConfigureMenu.setVisible(event.getY());
+    }
 }

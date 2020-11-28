@@ -788,4 +788,13 @@ public class Visuals {
 
 
     }
+
+    public static void clearAll() throws AWTException {
+
+        Graph.clearAll();
+        gc.setFill(Color.WHITE);
+        gc.setLineWidth(4.0D);
+        gc.fillRect(canvas.getLayoutX(), 0, canvasWidth, canvasHeight);
+        vertexCount=0;
+    }
 }
